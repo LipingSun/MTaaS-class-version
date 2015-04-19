@@ -272,25 +272,19 @@
        
         <table ng-table="tableUsers" class="table">
            <tr ng-repeat="user in user_data">
-                   <td data-title="'USER ID'" sortable="'user_id'">
-                     {{user.user_id}}
-                 </td>
                  <td data-title="'USER NAME'" sortable="'username'">
                     {{user.username}}
                  </td>
-                 <td data-title="'MOBILE NUM'" sortable="'emulator_num'">
-                    {{user.emulator_num}}
+                 <td data-title="'MOBILE NUM'" sortable="'number'">
+                    {{user.number}}
                  </td>
-                 <td data-title="'CPU (LEVEL/HOUR)'" sortable="'cpu'">
-                    {{user.cpu}}
+                 <td data-title="'RAM (M)'" sortable="'totalram'">
+                    {{user.totalram}}
                  </td>
-                 <td data-title="'RAM (M/HOUR)'" sortable="'ram'">
-                    {{user.ram}}
+                  <td data-title="'DISK (M)'" sortable="'totaldisk'">
+                    {{user.totaldisk}}
                  </td>
-                  <td data-title="'DISK (M/HOUR)'" sortable="'disk'">
-                    {{user.disk}}
-                 </td>
-                 <td data-title="'RUNTIME (HOUR)'" sortable="'runtime'">
+                 <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">
                     {{user.runtime}}
                  </td>
                  <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
@@ -417,6 +411,7 @@
     app.controller('DashboardCtrl', function($scope,$http, ngTableParams) {
          $scope.usage=function(){
 	          $http.get('/usage').success(function(res) {
+	        	 alert(JSON.stringify(res));
 	        	$scope.user_data = res.usage;
 	            console.log('login success');
 	          

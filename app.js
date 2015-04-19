@@ -47,6 +47,7 @@ app.get('/toDashboard',function(req,res){
 });
 
 app.get('/request', home.request);
+app.get('/usage', home.usage);
 
 
 app.post('/signup', home.afterSignUp);

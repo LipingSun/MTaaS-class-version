@@ -95,6 +95,54 @@ function request(req,res){
 	
 }
 
+function usage(req,res){
+	
+	var sqlStr="update runingrequest set end_time=? where status='run'";
+	
+	var params = [new Date()];
+	query.execQuery(sqlStr, params, function(err, rows) {
+		if(err){
+			//res.send({'errorMessage': "Please enster a valid email and password"});
+			console.log("ERROR: " + err.message);
+			//res.render({errorMessage: 'Sign Up Fail!'});
+			
+		}else{
+			console.log("end time updated");
+			var sqlStr="update runingrequest t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time)";
+			
+			var params = [];
+			query.execQuery(sqlStr, params, function(err, rows) {
+				if(err){
+					//res.send({'errorMessage': "Please enster a valid email and password"});
+					console.log("ERROR: " + err.message);
+					//res.render({errorMessage: 'Sign Up Fail!'});
+					
+				}else{
+					var sqlStr="SELECT u.username, count(r.ram) as number, sum(r.ram) as totalram, sum(r.disk) as totaldisk,sum(TIMESTAMPDIFF(MINUTE,r.start_time,r.end_time)) as runtime,sum(r.cost) as totalcost from user u left join runingrequest r on u.id=r.user_id group by u.username";
+					console.log("Query is:"+sqlStr);
+					
+					var params = [];
+					query.execQuery(sqlStr, params, function(err, rows) {
+						
+						console.log(rows.length);
+						if(rows.length !== 0) {		
+								
+								res.json({'usage': rows});
+							
+						}else{
+							//res.send({'errorMessage': "Please enter a valid email and password"});
+							console.log("no usages");
+							//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
+						}
+					});
+				}
+			});
+		}
+			
+	});
+
+}
+
 function afterSignUp(req,res)
 {
 	var user=req.param('account');
@@ -124,3 +172,4 @@ exports.afterSignIn=afterSignIn;
 exports.launch=launch;
 exports.request=request;
 exports.afterSignUp=afterSignUp;
+exports.usage=usage;
