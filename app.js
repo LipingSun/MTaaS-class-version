@@ -48,6 +48,8 @@ app.get('/toDashboard',function(req,res){
 
 app.get('/request', home.request);
 app.get('/usage', home.usage);
+app.get('/bill', home.bill);
+
 
 
 app.post('/signup', home.afterSignUp);
