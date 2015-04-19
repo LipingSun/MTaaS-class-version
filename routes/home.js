@@ -97,34 +97,13 @@ function request(req,res){
 
 function afterSignUp(req,res)
 {
-	// check user already exists
-	/*var createUser="Insert into users (`password`, `first_name`, `last_name`, `email`) VALUES ('"+req.param("InputPassword")+"', '"+req.param("FirstName")+"', '"+req.param("LastName")+"', '"+req.param("InputEmail")+"')";
-	console.log("Query is:"+createUser);
-	
-	mysql.fetchData(function(err,results){
-		if(err){
-			throw err;
-		}
-		else 
-		{
-			if(results.length > 0){
-				console.log("Sign Up Success");				
-				//res.redirect('/successSignIn');
-				res.send({"Signup":"Success"});
-			}
-			else {    				
-				console.log("Sign Up Failed");
-				res.send({"Signup":"Fail"});
-			}
-		}  
-	},createUser);*/
-	
-	//var n_flag=req.param("FirstName")==null||req.param("LastName")==null||$scope.InputEmail==null||$scope.InputPassword==null;
-    //var b_flag=$scope.FirstName.trim()==''||$scope.LastName.trim()==''||$scope.InputEmail.trim()==''||$scope.InputPassword.trim()=='';
-	var sqlStr="Insert into users (`password`, `first_name`, `last_name`, `email`) VALUES ('"+req.param("InputPassword")+"', '"+req.param("FirstName")+"', '"+req.param("LastName")+"', '"+req.param("InputEmail")+"')";
+	var user=req.param('account');
+	for (p in user)
+		console.log(user[p]);
+	var sqlStr="Insert into user (`user_type`, `username`,`password`, `first_name`, `last_name`, `email`) VALUES (?,?,?,?,?,?)";
 	console.log("Query is:"+sqlStr);		
 	
-	params=[];
+	params=[0,user.username,user.password,user.firstname,user.lastname,user.email];
 	query.execQuery(sqlStr, params, function(err, rows) {
 		if(err){
 			//res.send({'errorMessage': "Please enster a valid email and password"});
@@ -132,7 +111,7 @@ function afterSignUp(req,res)
 			//res.render({errorMessage: 'Sign Up Fail!'});
 			
 		}else{
-			res.json({errorMessage: 'Sign Up Success!'});
+			res.json({'signup': 'Success'});
 
 		}
 	});
@@ -144,5 +123,4 @@ function afterSignUp(req,res)
 exports.afterSignIn=afterSignIn;
 exports.launch=launch;
 exports.request=request;
-
 exports.afterSignUp=afterSignUp;

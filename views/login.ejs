@@ -91,6 +91,12 @@
                 <input ng-model="signupForm.lastname" type="text" class="form-control" name="lastname" placeholder="Last Name">
               </div>
             </div>
+             <div class="form-group">
+              <label for="username" class="col-md-3 control-label">User Name</label>
+              <div class="col-md-9">
+                <input ng-model="signupForm.username" type="text" class="form-control" name="username" placeholder="User Name">
+              </div>
+            </div>
             <div class="form-group">
               <label for="password" class="col-md-3 control-label">Password</label>
               <div class="col-md-9">
@@ -127,10 +133,17 @@
       };
       $scope.signup = function () {
         console.log('submit');
-        $http.post('http://demo9118842.mockable.io/users', $scope.signupForm).success(function(res) {
-          console.log('signup success');
-          window.location.assign('Dashboard');
-        });
+        $http({
+	            method: 'POST',
+	            url: '/signup',
+	            data: { "account": $scope.signupForm}
+	            
+	         }).success(function(res) {
+	         	if(res.signup==='Success'){
+          			alert('sign up success');
+          			window.location.assign('/');
+          		}
+        	});
       };
 
     });
