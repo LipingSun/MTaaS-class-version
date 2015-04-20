@@ -272,25 +272,19 @@
        
         <table ng-table="tableUsers" class="table">
            <tr ng-repeat="user in user_data">
-                   <td data-title="'USER ID'" sortable="'user_id'">
-                     {{user.user_id}}
-                 </td>
                  <td data-title="'USER NAME'" sortable="'username'">
                     {{user.username}}
                  </td>
-                 <td data-title="'MOBILE NUM'" sortable="'emulator_num'">
-                    {{user.emulator_num}}
+                 <td data-title="'MOBILE NUM'" sortable="'number'">
+                    {{user.number}}
                  </td>
-                 <td data-title="'CPU (LEVEL/HOUR)'" sortable="'cpu'">
-                    {{user.cpu}}
+                 <td data-title="'RAM (M)'" sortable="'totalram'">
+                    {{user.totalram}}
                  </td>
-                 <td data-title="'RAM (M/HOUR)'" sortable="'ram'">
-                    {{user.ram}}
+                  <td data-title="'DISK (M)'" sortable="'totaldisk'">
+                    {{user.totaldisk}}
                  </td>
-                  <td data-title="'DISK (M/HOUR)'" sortable="'disk'">
-                    {{user.disk}}
-                 </td>
-                 <td data-title="'RUNTIME (HOUR)'" sortable="'runtime'">
+                 <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">
                     {{user.runtime}}
                  </td>
                  <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
@@ -399,15 +393,32 @@
       <div ng-show="tab === 4" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Billing</h1>
         <table ng-table="tableBilling" class="table">
-          <tr ng-repeat="bill in bill_data">
-            <td data-title="'Emulator'">{{bill.emulator}}</td>
-            <td data-title="'CPU'">{{bill.cpu}}</td>
-            <td data-title="'RAM'">{{bill.ram}}</td>
-            <td data-title="'DISK'">{{bill.disk}}</td>
-            <td data-title="'COST'">{{bill.cost}}</td>
+          <tr ng-repeat="bill in bill_data" >
+          	
+            <td data-title="'MOBILE ID'" sortable="'id'">{{bill.id}}</td>
+            <td data-title="'VERSION'" sortable="'version'">{{bill.version}}</td>
+            <td data-title="'CPU'" sortable="'cpu'">{{bill.cpu}}</td>
+            <td data-title="'RAM (M)'" sortable="'ram'">{{bill.ram}}</td>
+            <td data-title="'DISK (M)'" sortable="'disk'">{{bill.disk}}</td>
+            <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{bill.runtime}}</td>
+            <td data-title="'STATUS'" sortable="'status'">{{bill.status}}</td>
+            <td data-title="'COST ($)'" sortable="'cost'">{{bill.cost}}</td>
+          
           </tr>
+          <tr>
+        	
+          <td data-title="'MOBILE ID'" ></td>
+          <td data-title="'VERSION'" ></td>
+          <td data-title="'CPU'"></td>
+          <td data-title="'RAM (M)'" ></td>
+          <td data-title="'DISK (M)'" ></td>
+          <td data-title="'RUNTIME (MINs)'" ></td>
+          <td data-title="'STATUS'" >TOTAL COST: </td>
+          <td data-title="'COST ($)'" >{{totalcost}}</td>
+        
+        </tr>
+          
         </table>
-
       </div>
     </div>
   </div>
@@ -417,6 +428,7 @@
     app.controller('DashboardCtrl', function($scope,$http, ngTableParams) {
          $scope.usage=function(){
 	          $http.get('/usage').success(function(res) {
+	        	 alert(JSON.stringify(res));
 	        	$scope.user_data = res.usage;
 	            console.log('login success');
 	          
@@ -451,11 +463,21 @@
        };
          
        $scope.billing=function(){ 
-    	   $scope.bill_data = [{emulator: "1", cpu: "armeabi-v7a", ram: "64", disk: "128M", cost: "$5"},
-                {emulator: "2", cpu: "armeabi-v7a", ram: "128", disk: "128M", cost: "$10"},
-                {emulator: "3", cpu: "armeabi-v7a", ram: "256", disk: "256M", cost: "$15"},
-                {emulator: "4", cpu: "x86", ram: "256", disk: "256M", cost: "$25"},
-                {emulator: "5", cpu: "x86_64", ram: "512", disk: "256M", cost: "$30"}];
+    	   $http.get('/bill').success(function(res) {
+ 			  alert(JSON.stringify(res));
+	           $scope.bill_data=res.bills;
+	           $scope.totalcost=res.totalcost;
+	        /*   var total=0;
+	           var bills=res.bills;
+	          // alert(bills.length);
+	        	//alert(bills[0]["cost"]);
+
+	           for(var i=0;i< bills.length;i++){
+	        	  alert(bills[i]["cost"]);
+	        	   total=total+ bills[i]["cost"];
+	        	   
+	           }
+	            $scope.totalcost=total;*/
 
 	            $scope.tableBilling= new ngTableParams({
 	              page: 1, // show first page
@@ -466,7 +488,8 @@
 	                $defer.resolve($scope.bill_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
 	              }
 	            });
-          };
+          });
+    	};
           
           $scope.mobile=function(){ 
 	            $scope.versions=["5.0.1 (API 21)","4.4.2 (API 19)","2.3.3 (API 10)"];
