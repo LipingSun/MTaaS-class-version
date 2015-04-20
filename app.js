@@ -6,7 +6,8 @@
 var express = require('express')
   , home = require('./routes/home')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , emulator = require('./routes/emulator');
 
 var app = express();
 
@@ -55,7 +56,7 @@ app.get('/bill', home.bill);
 app.post('/signup', home.afterSignUp);
 
 
-
+app.use('/emulator', emulator);
 
 
 
