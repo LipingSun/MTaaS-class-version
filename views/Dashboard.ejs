@@ -270,11 +270,10 @@
         </div>
         
        
-        <table  ng-table="tableUsers" class="table">
+        <table ng-table="tableUsers" class="table">
            <tr ng-repeat="user in user_data">
                  <td data-title="'USER NAME'" sortable="'username'">
-					<a ng-click="showdetail(user.id)">{{user.username}}</a>  
- 
+                    {{user.username}}
                  </td>
                  <td data-title="'MOBILE NUM'" sortable="'number'">
                     {{user.number}}
@@ -292,26 +291,7 @@
                     {{user.totalcost}}
                  </td>
               </tr>
-        </table>   
-        <div ng-show="usagedetail" >
-	        <table ng-table="tableDetails" class="table">
-		        <tr ng-repeat="usage in usage_data" >
-		        	
-		          <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
-		          <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
-		          <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
-		          <td data-title="'RAM (M)'" sortable="'ram'">{{usage.ram}}</td>
-		          <td data-title="'DISK (M)'" sortable="'disk'">{{usage.disk}}</td>
-		          <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
-		          <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
-		          <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
-		        
-		        </tr>
-		        
-	        
-	      </table>
-      </div>
-    </div>
+        </table>      
       </div>
       
       <div ng-show="tab === 2" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -382,27 +362,27 @@
 	        <fieldset>
 	          <div class="form-group">
 	            <label for="android-version">Android Version</label>
-	            <select ng-model="mobile_version" ng-options="version for version in versions" class="form-control"></select>
+	            <select ng-model="mobile.version" ng-options="version for version in versions" class="form-control"></select>
 	              
 	          </div>
 	          <div class="form-group">
 	            <label for="cpu">CPU</label>
-	            <select ng-model="mobile_cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
+	            <select ng-model="mobile.cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
 	          </div>
 	          
 	          <div class="form-group">
 	            <label for="ram">RAM (M)</label>
-	            <select ng-model="mobile_ram" ng-options="ram for ram in rams" class="form-control"></select>
+	            <select ng-model="mobile.ram" ng-options="ram for ram in rams" class="form-control"></select>
 	   
 	          </div>
 	          <div class="form-group">
 	            <label for="disk">DISK (M)</label>
-	            <select ng-model="mobile_disk" ng-options="disk for disk in disks" class="form-control"></select>
+	            <select ng-model="mobile.disk" ng-options="disk for disk in disks" class="form-control"></select>
 	            
 	          </div>
 	          <div class="form-group">
 	            <label for="number">NUMBER</label>
-	            <input ng-model="mobile_number" type="number" name="number" value="1" class="form-control"></input>
+	            <input ng-model="mobile.number" type="number" name="number" value="1" class="form-control"></input>
 	          </div>
 	          <button type="submit" class="btn btn-primary"  ng-click="launch()">Launch</button>
 	        </fieldset>
@@ -447,11 +427,10 @@
     var app = angular.module('myApp', ['ngTable']);
     app.controller('DashboardCtrl', function($scope,$http, ngTableParams) {
          $scope.usage=function(){
-        	  $scope.usagedetail=0;
 	          $http.get('/usage').success(function(res) {
-	        	// alert(JSON.stringify(res));
-	          $scope.user_data = res.usage;
-
+	        	 alert(JSON.stringify(res));
+	        	$scope.user_data = res.usage;
+	            console.log('login success');
 	          
 	            $scope.tableUsers = new ngTableParams({
 	              page: 1, // show first page
@@ -464,45 +443,11 @@
 	            });
 	          });
          };
-         $scope.showdetail=function(id){
-        	 //alert($scope.usagedetail);
-        	 
-
-        	 $scope.usagedetail=1;
-        	// alert($scope.usagedetail);
-
-        	 $http({
- 	            method: 'GET',
- 	            url: '/usageDetail', 
- 	            params: { "user_id": id}
- 	         }).success(function(res){
- 	        	//alert(JSON.stringify(res.usage));
- 	        	if(res.usage=='null')
-	        		 $scope.usage_data = [];
-	        	 else
-	        		 $scope.usage_data = res.usage;
-	          
- 	        	$scope.tableDetails = new ngTableParams({
- 		              page: 1, // show first page
- 		              count: 5 // count per page
- 		            }, {
- 		              total: $scope.usage_data.length, // length of data
- 		              getData: function($defer, params) {
- 		                $defer.resolve($scope.usage_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
- 		              }
- 		            });
- 	        	
- 		            
- 		        }).error(function(error){
- 		            alert("error");
-
- 		        });
-        	 
-         };
+         
      
     	$scope.request=function(){ 
     		  $http.get('/request').success(function(res) {
-    			//  alert(JSON.stringify(res));
+    			  alert(JSON.stringify(res));
 	           $scope.request_data=res.requests;
 		         $scope.tableRequest = new ngTableParams({
 	                page: 1, // show first page
@@ -519,7 +464,7 @@
          
        $scope.billing=function(){ 
     	   $http.get('/bill').success(function(res) {
- 			 // alert(JSON.stringify(res));
+ 			  alert(JSON.stringify(res));
 	           $scope.bill_data=res.bills;
 	           $scope.totalcost=res.totalcost;
 	        /*   var total=0;
@@ -556,11 +501,11 @@
 	            	$http({
 			           		 method: 'POST',
 			            	 url: '/launch',
-			            	 data: { "version": $scope.mobile_version,"cpu":$scope.mobile_cpu,"ram":$scope.mobile_ram,"disk":$scope.mobile_disk,"number":$scope.mobile_number}
+			            	 data: { "mobile": $scope.mobile}
 			            
 			         }).success(function(res) {
 			         	if(res.launchStatus=='Success')
-		          			alert('success');
+		          			alert('login success');
 		          		window.location.assign('/toDashboard');
 		        	});
 	            };
