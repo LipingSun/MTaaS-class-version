@@ -39,12 +39,11 @@ function afterSignIn(req,res)
 
 function launch(req,res)
 {
-	//var mobile=req.param('mobile');
+	var mobile=req.param('mobile');
 	var sqlStr="Insert into request (`user_id`, `version`, `cpu`, `ram`, `disk`,`number`) VALUES (?,?,?,?,?,?)";
 	console.log("Query is:"+sqlStr);
-	//for(var p in mobile)
-	//consloe.log(p+": "+mobile[p]);
-	var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk'),req.param('number')];
+	
+	var params = [req.session.user_id,mobile.version,mobile.cpu,mobile.ram,mobile.disk,mobile.number];
 
 	query.execQuery(sqlStr, params, function(err, rows) {
 		if(err){
@@ -53,11 +52,11 @@ function launch(req,res)
 			//res.render({errorMessage: 'Sign Up Fail!'});
 			
 		}else{
-			for (i=0;i<req.param('number');i++){
+			for (i=0;i<mobile.number;i++){
 				var sqlStr="Insert into runingRequest (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
 				console.log("Query is:"+sqlStr);
 				
-				var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk'),new Date()];
+				var params = [req.session.user_id,mobile.version,mobile.cpu,mobile.ram,mobile.disk,new Date()];
 				query.execQuery(sqlStr, params, function(err, rows) {
 					if(err){
 						//res.send({'errorMessage': "Please enster a valid email and password"});
@@ -119,7 +118,7 @@ function usage(req,res){
 					//res.render({errorMessage: 'Sign Up Fail!'});
 					
 				}else{
-					var sqlStr="SELECT u.id, u.username, count(r.ram) as number, sum(r.ram) as totalram, sum(r.disk) as totaldisk,sum(TIMESTAMPDIFF(MINUTE,r.start_time,r.end_time)) as runtime,sum(r.cost) as totalcost from user u left join runingrequest r on u.id=r.user_id group by u.username";
+					var sqlStr="SELECT u.username, count(r.ram) as number, sum(r.ram) as totalram, sum(r.disk) as totaldisk,sum(TIMESTAMPDIFF(MINUTE,r.start_time,r.end_time)) as runtime,sum(r.cost) as totalcost from user u left join runingrequest r on u.id=r.user_id group by u.username";
 					console.log("Query is:"+sqlStr);
 					
 					var params = [];
@@ -143,33 +142,6 @@ function usage(req,res){
 	});
 
 }
-
-
-function usageDetail(req,res){
-	
-	var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status,ip_port from runingrequest where user_id=?";
-					console.log("Query is:"+sqlStr);
-					
-					var params = [req.param('user_id')];
-					query.execQuery(sqlStr, params, function(err, rows) {
-						
-						console.log(rows.length);
-						if(rows.length !== 0) {		
-							
-										
-								res.json({'usage': rows});
-									
-							
-							
-						}else{
-							 res.json({'usage': 'null'});
-							//res.send({'errorMessage': "Please enter a valid email and password"});
-							console.log("no usage");
-							//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
-						}
-					});
-}
-			
 
 
 function bill(req,res){
@@ -265,5 +237,4 @@ exports.launch=launch;
 exports.request=request;
 exports.afterSignUp=afterSignUp;
 exports.usage=usage;
-exports.usageDetail=usageDetail;
 exports.bill=bill;
