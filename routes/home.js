@@ -1,6 +1,7 @@
 var ejs = require("ejs");
 var mysql = require('./mysql');
 var connpool=require('./dbConnection/sqlConn');
+var requestrequest = require('request');
 var query=require('./dbConnection/sqlQuery');
 
 
@@ -53,19 +54,25 @@ function launch(req,res)
 			//res.render({errorMessage: 'Sign Up Fail!'});
 			
 		}else{
-			for (i=0;i<req.param('number');i++){
+			for (var i=0;i<req.param('number');i++){
 				var sqlStr="Insert into runingRequest (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
 				console.log("Query is:"+sqlStr);
 				
 				var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk'),new Date()];
 				query.execQuery(sqlStr, params, function(err, rows) {
 					if(err){
-						//res.send({'errorMessage': "Please enster a valid email and password"});
+						//res.send({'errorMessage': "Please enter a valid email and password"});
 						console.log("ERROR: " + err.message);
 						//res.render({errorMessage: 'Sign Up Fail!'});
 						
 					}else{
-						console.log((i+1)+"mobile lanuched");
+						console.log(rows.insertId);
+						requestrequest.post('http://localhost:3000/emulator', {body: {'id': rows.insertId}, json: true}, function(error, response, body) {
+							if (error) {
+								console.log('Error: ' + error);
+							}
+						});
+						console.log(i + " mobile launched");
 					}
 				});
 			}
