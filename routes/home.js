@@ -265,6 +265,31 @@ function afterSignUp(req,res)
 
 }
 
+function loadPipData(req,res)
+{
+	var sqlStr="SELECT * from instance";
+	console.log("Query is:"+sqlStr);
+	
+	var params = [];
+	query.execQuery(sqlStr, params, function(err, rows) {
+		
+		console.log(rows.length);
+		if(rows.length !== 0) {		
+			
+						
+				res.json({'pip': rows});
+					
+			
+			
+		}else{
+			 res.json({'pip': 'null'});
+			//res.send({'errorMessage': "Please enter a valid email and password"});
+			console.log("no instance");
+			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
+		}
+	});
+}
+
 
 
 exports.afterSignIn=afterSignIn;
@@ -274,3 +299,5 @@ exports.afterSignUp=afterSignUp;
 exports.usage=usage;
 exports.usageDetail=usageDetail;
 exports.bill=bill;
+exports.loadPipData=loadPipData;
+

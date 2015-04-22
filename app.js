@@ -38,7 +38,10 @@ app.get('/', function(req,res){
 	res.render('login');
 
 });
+app.get('/test', function(req,res){
+	res.render('test');
 
+});
 app.get('/signin', home.afterSignIn);
 app.post('/launch',  home.launch);
 
@@ -46,7 +49,7 @@ app.get('/toDashboard',function(req,res){
 	res.render('Dashboard');
 
 });
-
+app.get('/loadPipData',home.loadPipData);
 app.get('/request', home.request);
 app.get('/usage', home.usage);
 app.get('/bill', home.bill);

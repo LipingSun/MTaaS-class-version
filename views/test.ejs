@@ -9,496 +9,75 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" href="http://getbootstrap.com/favicon.ico">
-
   <title>MTaaS</title>
-
-  <script src="/stylesheets/js/angular.min.js"></script>
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="/stylesheets/css/bootstrap.min.css" />
-
-  <!-- Custom styles for this template -->
-  <link href="/stylesheets/css/dashboard.css" rel="stylesheet" />
-
-  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-  <script src="/stylesheets/js/ie-emulation-modes-warning.js"></script>
-
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-  <link rel="stylesheet" href="/stylesheets/css/ng-table.min.css" />
-  <script src="/stylesheets/js/ng-table.min.js"></script>
-
+  <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+  
+  <script src="/bower_components/Chart.js/Chart.js"></script>
  
+  <link rel="stylesheet" href="/bower_components/angular-chart.js/dist/angular-chart.css">
+
+  
 
 </head>
 
 <body>
 
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">Admin</a>
-      </div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href ng-click="tab = 0">Overview</a>
-          </li>
-          <li><a href ng-click="tab = 1">Users</a>
-          </li>
-          <li><a href ng-click="tab = 2">Requests</a>
-          </li>
-          <li><a href ng-click="tab = 3">Emulator</a>
-          </li>
-          <li><a href ng-click="tab = 4">Billing</a>
-          </li>
-        </ul>
-        <!--<form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>-->
-      </div>
-    </div>
-  </nav>
-
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-3 col-md-2 sidebar">
-        <ul class="nav nav-sidebar" ng-init="tab = 0">
-          <li ng-class="{ active:tab === 0 }"><a href ng-click="tab = 0">Overview <span class="sr-only">(current)</span></a>
-          </li>
-          <li ng-class="{ active:tab === 1 }"><a href ng-click="loadUsers()">Users</a>
-          </li>
-          <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2">Requests</a>
-          </li>
-          <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3">Emulator</a>
-          </li>
-          <li ng-class="{ active:tab === 4 }"><a href ng-click="tab = 4">Billing</a>
-          </li>
-        </ul>
-      </div>
-      
-      <div ng-show="tab === 0" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header">Dashboard</h1>
-
-        <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
-
-        <h2 class="sub-header">Section title</h2>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-              </tr>
-              <tr>
-                <td>1,002</td>
-                <td>amet</td>
-                <td>consectetur</td>
-                <td>adipiscing</td>
-                <td>elit</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>Integer</td>
-                <td>nec</td>
-                <td>odio</td>
-                <td>Praesent</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>libero</td>
-                <td>Sed</td>
-                <td>cursus</td>
-                <td>ante</td>
-              </tr>
-              <tr>
-                <td>1,004</td>
-                <td>dapibus</td>
-                <td>diam</td>
-                <td>Sed</td>
-                <td>nisi</td>
-              </tr>
-              <tr>
-                <td>1,005</td>
-                <td>Nulla</td>
-                <td>quis</td>
-                <td>sem</td>
-                <td>at</td>
-              </tr>
-              <tr>
-                <td>1,006</td>
-                <td>nibh</td>
-                <td>elementum</td>
-                <td>imperdiet</td>
-                <td>Duis</td>
-              </tr>
-              <tr>
-                <td>1,007</td>
-                <td>sagittis</td>
-                <td>ipsum</td>
-                <td>Praesent</td>
-                <td>mauris</td>
-              </tr>
-              <tr>
-                <td>1,008</td>
-                <td>Fusce</td>
-                <td>nec</td>
-                <td>tellus</td>
-                <td>sed</td>
-              </tr>
-              <tr>
-                <td>1,009</td>
-                <td>augue</td>
-                <td>semper</td>
-                <td>porta</td>
-                <td>Mauris</td>
-              </tr>
-              <tr>
-                <td>1,010</td>
-                <td>massa</td>
-                <td>Vestibulum</td>
-                <td>lacinia</td>
-                <td>arcu</td>
-              </tr>
-              <tr>
-                <td>1,011</td>
-                <td>eget</td>
-                <td>nulla</td>
-                <td>Class</td>
-                <td>aptent</td>
-              </tr>
-              <tr>
-                <td>1,012</td>
-                <td>taciti</td>
-                <td>sociosqu</td>
-                <td>ad</td>
-                <td>litora</td>
-              </tr>
-              <tr>
-                <td>1,013</td>
-                <td>torquent</td>
-                <td>per</td>
-                <td>conubia</td>
-                <td>nostra</td>
-              </tr>
-              <tr>
-                <td>1,014</td>
-                <td>per</td>
-                <td>inceptos</td>
-                <td>himenaeos</td>
-                <td>Curabitur</td>
-              </tr>
-              <tr>
-                <td>1,015</td>
-                <td>sodales</td>
-                <td>ligula</td>
-                <td>in</td>
-                <td>libero</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div ng-show="tab === 1" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header">Users</h1>
-
-        <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
-        
-       
-        <table ng-table="tableParams" class="table" ng-controller="UserCtrl">
-           <tr ng-repeat="user in $data">
-                   <td data-title="'USER ID'" sortable="'user_id'">
-                     {{user.user_id}}
-                 </td>
-                 <td data-title="'USER NAME'" sortable="'username'">
-                    {{user.username}}
-                 </td>
-                 <td data-title="'EMULATOR NUM'" sortable="'emulator_num'">
-                    {{user.emulator_num}}
-                 </td>
-                 <td data-title="'CPU (LEVEL/HOUR)'" sortable="'cpu'">
-                    {{user.cpu}}
-                 </td>
-                 <td data-title="'RAM (M/HOUR)'" sortable="'ram'">
-                    {{user.ram}}
-                 </td>
-                  <td data-title="'DISK (M/HOUR)'" sortable="'disk'">
-                    {{user.disk}}
-                 </td>
-                 <td data-title="'RUNTIME (HOUR)'" sortable="'runtime'">
-                    {{user.runtime}}
-                 </td>
-                 <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
-                    {{user.totalcost}}
-                 </td>
-              </tr>
-        </table>      
-      </div>
-      
-      <div ng-show="tab === 2" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header">Requests</h1>
-
-        <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
-
-        <h2 class="sub-header">Requests</h2>
-          
-
-        <div class="table-responsive" ng-controller='RequestCtrl'>
-          <table ng-table="tableParams" class="table table-striped">
-	            <tr ng-repeat="user in $data">
-	                 <td data-title="'REQUEST ID'" sortable="'request_id'">
-	               		 {{user.request_id}}
-	           		 </td>
-	           		 <td data-title="'USER NAME'" sortable="'username'">
-	                	{{user.username}}
-	           		 </td>
-	           		 <td data-title="'PLATFORM'" sortable="'platform'">
-	                	{{user.platform}}
-	           		 </td>
-	           		 <td data-title="'CPU (LEVEL)'" sortable="'cpu'">
-	                	{{user.cpu}}
-	           		 </td>
-	           		 <td data-title="'RAM (M)'" sortable="'ram'">
-	                	{{user.ram}}
-	           		 </td>
-	           		  <td data-title="'DISK (M)'" sortable="'disk'">
-	                	{{user.disk}}
-	           		 </td>
-	           		 <td data-title="'RUNTIME (HOUR)'" sortable="'runtime'">
-	                	{{user.runtime}}
-	           		 </td>
-	           		 <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
-	                	{{user.ip_port}}
-	           		 </td>
-	            </tr>
-        	</table>	
-        </div>
-      </div>
-      
-      <div ng-show="tab === 3" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ng-controller='MobileCtrl'>
-       
-	      <h1 class="page-header">Emulator</h1>
-	      <form id="mobile">
-	        <fieldset>
-	          <div class="form-group">
-	            <label for="android-version">Android Version</label>
-	            <select ng-model="mobile.version" ng-options="version for version in versions" class="form-control"></select>
-	              
-	          </div>
-	          <div class="form-group">
-	            <label for="cpu">CPU</label>
-	            <select ng-model="mobile.cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
-	          </div>
-	          
-	          <div class="form-group">
-	            <label for="ram">RAM (M)</label>
-	            <select ng-model="mobile.ram" ng-options="ram for ram in rams" class="form-control"></select>
-	   
-	          </div>
-	          <div class="form-group">
-	            <label for="disk">DISK (M)</label>
-	            <select ng-model="mobile.disk" ng-options="disk for disk in disks" class="form-control"></select>
-	            
-	          </div>
-	          <div class="form-group">
-	            <label for="number">NUMBER</label>
-	            <input ng-model="mobile.number" type="number" name="number" value="1" class="form-control"></input>
-	          </div>
-	          <button type="submit" class="btn btn-primary"  ng-click="launch()">Launch</button>
-	        </fieldset>
-	      </form>
-      </div>
-      
-      
-      <div ng-show="tab === 4" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <h1 class="page-header">Billing</h1>
-        <table ng-table="tableParams" class="table" ng-controller="BillingCtrl">
-          <tr ng-repeat="bill in $data">
-            <td data-title="'Emulator'">{{bill.emulator}}</td>
-            <td data-title="'CPU'">{{bill.cpu}}</td>
-            <td data-title="'RAM'">{{bill.ram}}</td>
-            <td data-title="'DISK'">{{bill.disk}}</td>
-            <td data-title="'COST'">{{bill.cost}}</td>
-          </tr>
-        </table>
-
-      </div>
-    </div>
-  </div>
   
+	<!--<canvas id="polar-area" class="chart chart-polar-area" data="data" labels="labels"></canvas> -->
+	<div id="canvas-holder">
+			<canvas id="chart-area" width="300" height="300"/>
+	</div>
    <script>
-    var app = angular.module('myApp', ['ngTable']);
-    app.controller('UserCtrl', function($scope,$http, ngTableParams) {
-          
-          $http.get('http://demo9118842.mockable.io/users/usage').success(function(res) {
-            var data = res;
-            console.log('login success');
-          
-            $scope.tableParams = new ngTableParams({
-              page: 1, // show first page
-              count: 5 // count per page
-            }, {
-              total: data.length, // length of data
-              getData: function($defer, params) {
-                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-              }
-            });
-          });
-      });
-         
-     app.controller('RequestCtrl', function($scope,$http, ngTableParams) {
-           
-           $http.get('http://demo9118842.mockable.io/requests').success(function(res) {
-	           console.log(res.length);
-	           var data=res;
-		         $scope.tableParams = new ngTableParams({
-	                page: 1, // show first page
-	                count: 5 // count per page
-	              }, {
-	                total: data.length, // length of data
-	                getData: function($defer, params) {
-	                  $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-	                }
-	            });
-	           });
+    var pieData = [
+				{
+					value: 300,
+					color:"#F7464A",
+					highlight: "#FF5A5E",
+					label: "Red"
+				},
+				{
+					value: 50,
+					color: "#46BFBD",
+					highlight: "#5AD3D1",
+					label: "Green"
+				},
+				{
+					value: 100,
+					color: "#FDB45C",
+					highlight: "#FFC870",
+					label: "Yellow"
+				},
+				{
+					value: 40,
+					color: "#949FB1",
+					highlight: "#A8B3C5",
+					label: "Grey"
+				},
+				{
+					value: 120,
+					color: "#4D5360",
+					highlight: "#616774",
+					label: "Dark Grey"
+				}
 
-       });
-         
-     	app.controller('BillingCtrl', function($scope, ngTableParams) {
-            var data = [{emulator: "1", cpu: "armeabi-v7a", ram: "64", disk: "128M", cost: "$5"},
-                {emulator: "2", cpu: "armeabi-v7a", ram: "128", disk: "128M", cost: "$10"},
-                {emulator: "3", cpu: "armeabi-v7a", ram: "256", disk: "256M", cost: "$15"},
-                {emulator: "4", cpu: "x86", ram: "256", disk: "256M", cost: "$25"},
-                {emulator: "5", cpu: "x86_64", ram: "512", disk: "256M", cost: "$30"}];
+			];
 
-	            $scope.tableParams = new ngTableParams({
-	              page: 1, // show first page
-	              count: 5 // count per page
-	            }, {
-	              total: data.length, // length of data
-	              getData: function($defer, params) {
-	                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-	              }
-	            });
-          });
-          
-        app.controller('MobileCtrl', function($scope, $http) {
-	            $scope.versions=["5.0.1 (API 21)","4.4.2 (API 19)","2.3.3 (API 10)"];
-	            $scope.cpus=["armeabi-v7a","x86","x86_64"];
-	            $scope.rams=[64,128,256,512];
-	            $scope.disks=[128,256,512,1024];
-	     
-	            $scope.launch=function(){
-	            	$http({
-			           		 method: 'POST',
-			            	 url: '/launch',
-			            	 data: { "mobile": $scope.mobile}
-			            
-			         }).success(function(res) {
-			         	if(res.launchStatus=='Success')
-		          			alert('login success');
-		          		window.location.assign('/toDashboard');
-		        	});
-	            };
-          });
-       
+			window.onload = function(){
+				var ctx = document.getElementById("chart-area").getContext("2d");
+				window.myPie = new Chart(ctx).Pie(pieData);
+			};
+
+/*angular.module("app", ["chart.js"]).controller("PolarAreaCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
+  $scope.data = [300, 500, 100, 40, 120];
+});*/
+              
+
+
+   
   </script>
 
-  <!-- Bootstrap core JavaScript
-    ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="/stylesheets/js/jquery.min.js"></script>
-  <script src="/stylesheets/js/bootstrap.min.js"></script>
-  <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-  <script src="/stylesheets/js/holder.js"></script>
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="/stylesheets/js/ie10-viewport-bug-workaround.js"></script>
+  
 </body>
 
 </html>
