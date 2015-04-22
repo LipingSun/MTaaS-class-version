@@ -13,6 +13,8 @@
   <title>MTaaS</title>
 
   <script src="/stylesheets/js/angular.min.js"></script>
+  <script src="/bower_components/Chart.js/Chart.js"></script>
+
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="/stylesheets/css/bootstrap.min.css" />
@@ -89,185 +91,40 @@
       
       <div ng-show="tab === 0" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Dashboard</h1>
-
+        
         <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
+	        <div class="col-xs-6 col-sm-3 placeholder">
+		      <div id="canvas-holder">
+					<canvas id="chart-area1" width="150" height="150"/>
+			  </div>
+	          <h4>HOST 1</h4>
+	          <span class="text-muted">{{instance[0].ip}}</span>
+	        </div>
+	        <div class="col-xs-6 col-sm-3 placeholder">
+	            <div id="canvas-holder">
+	          		<canvas id="chart-area2" width="150" height="150"/>
+	            </div>
+	            <h4>HOST 2</h4>
+	            <span class="text-muted">{{instance[1].ip}}</span>
+	        </div>
+	        <div class="col-xs-6 col-sm-3 placeholder">
+	          	<div id="canvas-holder">
+	          		<canvas id="chart-area3" width="150" height="150"/>
+	          	</div>
+	            <h4>HOST 3</h4>
+	            <span class="text-muted">{{instance[2].ip}}</span>
+	         </div>
+      </div>
 
-        <h2 class="sub-header">Section title</h2>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-              </tr>
-              <tr>
-                <td>1,002</td>
-                <td>amet</td>
-                <td>consectetur</td>
-                <td>adipiscing</td>
-                <td>elit</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>Integer</td>
-                <td>nec</td>
-                <td>odio</td>
-                <td>Praesent</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>libero</td>
-                <td>Sed</td>
-                <td>cursus</td>
-                <td>ante</td>
-              </tr>
-              <tr>
-                <td>1,004</td>
-                <td>dapibus</td>
-                <td>diam</td>
-                <td>Sed</td>
-                <td>nisi</td>
-              </tr>
-              <tr>
-                <td>1,005</td>
-                <td>Nulla</td>
-                <td>quis</td>
-                <td>sem</td>
-                <td>at</td>
-              </tr>
-              <tr>
-                <td>1,006</td>
-                <td>nibh</td>
-                <td>elementum</td>
-                <td>imperdiet</td>
-                <td>Duis</td>
-              </tr>
-              <tr>
-                <td>1,007</td>
-                <td>sagittis</td>
-                <td>ipsum</td>
-                <td>Praesent</td>
-                <td>mauris</td>
-              </tr>
-              <tr>
-                <td>1,008</td>
-                <td>Fusce</td>
-                <td>nec</td>
-                <td>tellus</td>
-                <td>sed</td>
-              </tr>
-              <tr>
-                <td>1,009</td>
-                <td>augue</td>
-                <td>semper</td>
-                <td>porta</td>
-                <td>Mauris</td>
-              </tr>
-              <tr>
-                <td>1,010</td>
-                <td>massa</td>
-                <td>Vestibulum</td>
-                <td>lacinia</td>
-                <td>arcu</td>
-              </tr>
-              <tr>
-                <td>1,011</td>
-                <td>eget</td>
-                <td>nulla</td>
-                <td>Class</td>
-                <td>aptent</td>
-              </tr>
-              <tr>
-                <td>1,012</td>
-                <td>taciti</td>
-                <td>sociosqu</td>
-                <td>ad</td>
-                <td>litora</td>
-              </tr>
-              <tr>
-                <td>1,013</td>
-                <td>torquent</td>
-                <td>per</td>
-                <td>conubia</td>
-                <td>nostra</td>
-              </tr>
-              <tr>
-                <td>1,014</td>
-                <td>per</td>
-                <td>inceptos</td>
-                <td>himenaeos</td>
-                <td>Curabitur</td>
-              </tr>
-              <tr>
-                <td>1,015</td>
-                <td>sodales</td>
-                <td>ligula</td>
-                <td>in</td>
-                <td>libero</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        
+
+      
       </div>
       
       <div ng-show="tab === 1" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Users</h1>
 
-        <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
+		 
         
        
         <table  ng-table="tableUsers" class="table">
@@ -317,30 +174,6 @@
       <div ng-show="tab === 2" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Requests</h1>
 
-        <div class="row placeholders">
-          <div class="col-xs-6 col-sm-3 placeholder">
-            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Acllocate Ratio</h4>
-            <span class="text-muted">A/D</span>
-          </div>
-          <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Requests</h4>
-              <span class="text-muted">Running Requests</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Users</h4>
-              <span class="text-muted">All Users</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Billings</h4>
-              <span class="text-muted">All Billings</span>
-            </div>
-        </div>
-
-        <h2 class="sub-header">Requests</h2>
           
 
         <div class="table-responsive">
@@ -446,6 +279,68 @@
    <script>
     var app = angular.module('myApp', ['ngTable']);
     app.controller('DashboardCtrl', function($scope,$http, ngTableParams) {
+    	$http.get('/loadPipData').success(function(res) {
+	        	alert(JSON.stringify(res));
+	          $scope.instance = res.pip;
+    	       var allocated=$scope.instance[0]['emulator_number'];
+             var total=$scope.instance[0]['emulator_limit'];
+             alert((total-allocated));        
+            var pieData1 = [
+          	 				{
+          	 					value: allocated,
+          	 					color:"#F7464A",
+          	 					highlight: "#FF5A5E",
+          	 					label: "Allocated"
+          	 				},
+          	 				{
+          	 					value: (total-allocated),
+          	 					color: "#46BFBD",
+          	 					highlight: "#5AD3D1",
+          	 					label: "Available"
+          	 				}
+
+          	 	];
+              var pieData2 = [
+                    {
+                      value: $scope.instance[1]['emulator_number'],
+                      color:"#F7464A",
+                      highlight: "#FF5A5E",
+                      label: "Allocated"
+                    },
+                    {
+                      value: ($scope.instance[1]['emulator_limit']-$scope.instance[1]['emulator_number']),
+                      color: "#46BFBD",
+                      highlight: "#5AD3D1",
+                      label: "Available"
+                    }
+
+              ];
+              var pieData3 = [
+                    {
+                      value: $scope.instance[2]['emulator_number'],
+                      color:"#F7464A",
+                      highlight: "#FF5A5E",
+                      label: "Allocated"
+                    },
+                    {
+                      value: ($scope.instance[2]['emulator_limit']-$scope.instance[2]['emulator_number']),
+                      color: "#46BFBD",
+                      highlight: "#5AD3D1",
+                      label: "Available"
+                    }
+
+              ];
+
+          	 	
+    	 				var ctx1 = document.getElementById("chart-area1").getContext("2d");
+    	 				window.myPie = new Chart(ctx1).Pie(pieData1);
+    	 				var ctx2 = document.getElementById("chart-area2").getContext("2d");
+    	 				window.myPie = new Chart(ctx2).Pie(pieData2);
+    	 				var ctx3 = document.getElementById("chart-area3").getContext("2d");
+    	 				window.myPie = new Chart(ctx3).Pie(pieData3);
+    	 
+       });
+    	 
          $scope.usage=function(){
         	  $scope.usagedetail=0;
 	          $http.get('/usage').success(function(res) {
@@ -566,6 +461,9 @@
 	            };
           };
     });
+  </script>
+  <script>
+  		
   </script>
 
   <!-- Bootstrap core JavaScript
