@@ -71,6 +71,7 @@ function launch(req,res)
 						emulator.create('8.21.28.162', rows.insertId, function (err, data) {
 							if (!err) {
 								console.log(data.port);
+
 							} else {
 								console.log('Error: ' + error);
 							}
