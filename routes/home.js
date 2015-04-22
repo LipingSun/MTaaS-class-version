@@ -3,6 +3,7 @@ var mysql = require('./mysql');
 var connpool=require('./dbConnection/sqlConn');
 var requestrequest = require('request');
 var query=require('./dbConnection/sqlQuery');
+var emulator = require('./emulator');
 
 
 function afterSignIn(req,res)
@@ -67,8 +68,10 @@ function launch(req,res)
 						
 					}else{
 						console.log(rows.insertId);
-						requestrequest.post('http://localhost:3000/emulator', {body: {'id': rows.insertId}, json: true}, function(error, response, body) {
-							if (error) {
+						emulator.create('8.21.28.162', rows.insertId, function (err, data) {
+							if (!err) {
+								console.log(data.port);
+							} else {
 								console.log('Error: ' + error);
 							}
 						});
@@ -155,26 +158,26 @@ function usage(req,res){
 function usageDetail(req,res){
 	
 	var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status,ip_port from runingrequest where user_id=?";
-					console.log("Query is:"+sqlStr);
+	console.log("Query is:"+sqlStr);
 					
-					var params = [req.param('user_id')];
-					query.execQuery(sqlStr, params, function(err, rows) {
+	var params = [req.param('user_id')];
+	query.execQuery(sqlStr, params, function(err, rows) {
 						
-						console.log(rows.length);
-						if(rows.length !== 0) {		
+		console.log(rows.length);
+		if(rows.length !== 0) {
 							
 										
-								res.json({'usage': rows});
+			res.json({'usage': rows});
 									
 							
 							
-						}else{
-							 res.json({'usage': 'null'});
-							//res.send({'errorMessage': "Please enter a valid email and password"});
-							console.log("no usage");
-							//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
-						}
-					});
+		}else{
+			res.json({'usage': 'null'});
+			//res.send({'errorMessage': "Please enter a valid email and password"});
+			console.log("no usage");
+			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
+		}
+	});
 }
 			
 

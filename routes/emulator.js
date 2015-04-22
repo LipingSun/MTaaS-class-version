@@ -3,74 +3,78 @@ express = require('express');
 
 var url = 'http://8.21.28.162:8888/emulator';
 
-var emulator = express();
+var emulator = {};
 
-emulator.get('/', function (req, res) {
+emulator.list = function (ip, next) {
+    var url = 'http://' + ip + ':8888/emulator';
     request.get(url, function(error, response, body) {
         if (!error) {
             console.log('Response Code: ' + response.statusCode);
             if (response.statusCode == 200) {
-                res.setHeader('Content-Type', 'application/json');
-                body = body.toString();
+                console.log('emulators: ' + body.toString());
+
             } else {
-                body = "Create emulator fail";
+                console.log("Create emulator fail");
             }
-            res.end(body);
+            next(null, body);
         } else {
+            next(error, null);
             console.log('Error: ' + error);
         }
     });
-});
+};
 
-emulator.get('/:id', function (req, res) {
-    request.get(url + '?id=' + req.params.id, function(error, response, body) {
+emulator.read = function (ip, id, next) {
+    var url = 'http://' + ip + ':8888/emulator';
+    request.get(url + '?id=' + id, function(error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
-                res.setHeader('Content-Type', 'application/json');
-                body = body.toString();
+                console.log('emulator: ' + body.toString());
             } else {
-                body = "No emulator found";
+                console.log("No emulator found");
             }
-            res.end(body);
+            next(null, body);
         } else {
+            next(error, null);
             console.log('Error: ' + error);
         }
     });
-});
+};
 
-emulator.post('/', function (req, res) {
-    request.post(url, {body: req.body, json: true}, function(error, response, body) {
+emulator.create = function (ip, id, next) {
+    request.post(url, {body: {'id': Number(id)}, json: true}, function(error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
-                res.setHeader('Content-Type', 'application/json');
-                body = JSON.stringify(body);
+                console.log('emulator: ' + JSON.stringify(body));
             } else {
-                body = "No emulator found";
+                console.log("emulator create fail");
             }
-            res.end(body);
+            next(null, body);
         } else {
+            next(error, null);
+
             console.log('Error: ' + error);
         }
     });
-});
+};
 
-emulator.del('/:id', function (req, res) {
-    request.del(url, {body: {'id': Number(req.params.id)}, json: true}, function(error, response, body) {
+emulator.delete = function (ip, id, next) {
+    request.del(url, {body: {'id': Number(id)}, json: true}, function(error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
-                res.setHeader('Content-Type', 'application/json');
-                body = JSON.stringify(body);
+                console.log('emulator deleted');
             } else {
                 body = "No emulator found";
             }
-            res.end(body);
+            next(null, body);
         } else {
+            next(error, null);
             console.log('Error: ' + error);
         }
     });
-});
+};
 
 module.exports = emulator;
