@@ -56,7 +56,7 @@ function launch(req,res)
 			
 		}else{
 			for (var i=0;i<req.param('number');i++){
-				var sqlStr="Insert into runingRequest (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
+				var sqlStr="Insert into emulator (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
 				console.log("Query is:"+sqlStr);
 				
 				var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk'),new Date()];
@@ -72,6 +72,7 @@ function launch(req,res)
 							if (!err) {
 								console.log(data.port);
 
+								res.json({'Status': ' Success', 'info': data});
 							} else {
 								console.log('Error: ' + error);
 							}
@@ -80,14 +81,14 @@ function launch(req,res)
 					}
 				});
 			}
-			res.json({"launchStatus": ' Success'});
+
 		}
 	});
 
 }
 
 function request(req,res){
-	var sqlStr="select runingrequest.id, username, version, cpu, ram,disk start_time, ip_port from user, runingrequest where user.id=runingrequest.user_id";
+	var sqlStr="select emulator.id, username, version, cpu, ram,disk start_time, ip_port from user, emulator where user.id=emulator.user_id";
 	console.log("Query is:"+sqlStr);
 	
 	var params = [];
@@ -109,7 +110,7 @@ function request(req,res){
 
 function usage(req,res){
 	
-	var sqlStr="update runingrequest set end_time=? where status='run'";
+	var sqlStr="update emulator set end_time=? where status='run'";
 	
 	var params = [new Date()];
 	query.execQuery(sqlStr, params, function(err, rows) {
@@ -120,7 +121,7 @@ function usage(req,res){
 			
 		}else{
 			console.log("end time updated");
-			var sqlStr="update runingrequest t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time)";
+			var sqlStr="update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time)";
 			
 			var params = [];
 			query.execQuery(sqlStr, params, function(err, rows) {
@@ -130,7 +131,7 @@ function usage(req,res){
 					//res.render({errorMessage: 'Sign Up Fail!'});
 					
 				}else{
-					var sqlStr="SELECT u.id, u.username, count(r.ram) as number, sum(r.ram) as totalram, sum(r.disk) as totaldisk,sum(TIMESTAMPDIFF(MINUTE,r.start_time,r.end_time)) as runtime,sum(r.cost) as totalcost from user u left join runingrequest r on u.id=r.user_id group by u.username";
+					var sqlStr="SELECT u.id, u.username, count(r.ram) as number, sum(r.ram) as totalram, sum(r.disk) as totaldisk,sum(TIMESTAMPDIFF(MINUTE,r.start_time,r.end_time)) as runtime,sum(r.cost) as totalcost from user u left join emulator r on u.id=r.user_id group by u.username";
 					console.log("Query is:"+sqlStr);
 					
 					var params = [];
@@ -158,7 +159,7 @@ function usage(req,res){
 
 function usageDetail(req,res){
 	
-	var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status,ip_port from runingrequest where user_id=?";
+	var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status,ip_port from emulator where user_id=?";
 	console.log("Query is:"+sqlStr);
 					
 	var params = [req.param('user_id')];
@@ -185,7 +186,7 @@ function usageDetail(req,res){
 
 function bill(req,res){
 	
-	var sqlStr="update runingrequest set end_time=? where status=? and user_id=?";
+	var sqlStr="update emulator set end_time=? where status=? and user_id=?";
 	
 	var params = [new Date(),'run',req.session.user_id];
 	query.execQuery(sqlStr, params, function(err, rows) {
@@ -196,7 +197,7 @@ function bill(req,res){
 			
 		}else{
 			console.log("end time updated");
-			var sqlStr="update runingrequest t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where t.user_id=?";
+			var sqlStr="update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where t.user_id=?";
 			
 			var params = [req.session.user_id];
 			query.execQuery(sqlStr, params, function(err, rows) {
@@ -206,7 +207,7 @@ function bill(req,res){
 					//res.render({errorMessage: 'Sign Up Fail!'});
 					
 				}else{
-					var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status from runingrequest where user_id=?";
+					var sqlStr="SELECT id, version,cpu,ram,disk,TIMESTAMPDIFF(MINUTE,start_time,end_time) as runtime,cost,status from emulator where user_id=?";
 					console.log("Query is:"+sqlStr);
 					
 					var params = [req.session.user_id];
@@ -214,7 +215,7 @@ function bill(req,res){
 						
 						console.log(rows.length);
 						if(rows.length !== 0) {		
-							var sqlStr="SELECT sum(cost) as totalcost from runingrequest where user_id=?";
+							var sqlStr="SELECT sum(cost) as totalcost from emulator where user_id=?";
 							console.log("Query is:"+sqlStr);
 							var bills=rows;
 							var params = [req.session.user_id];
