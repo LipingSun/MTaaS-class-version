@@ -50,7 +50,7 @@ app.get('/toDashboard',function(req,res){
 
 });
 app.get('/loadPipData',home.loadPipData);
-app.get('/request', home.request);
+app.get('/emulators', home.emulators);
 app.get('/usage', home.usage);
 app.get('/bill', home.bill);
 app.get('/usageDetail', home.usageDetail);

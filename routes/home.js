@@ -1,7 +1,6 @@
 var ejs = require("ejs");
 var mysql = require('./mysql');
 var connpool=require('./dbConnection/sqlConn');
-var requestrequest = require('request');
 var query=require('./dbConnection/sqlQuery');
 var emulator = require('./emulator');
 
@@ -87,7 +86,7 @@ function launch(req,res)
 
 }
 
-function request(req,res){
+function emulators(req,res){
 	var sqlStr="select emulator.id, username, version, cpu, ram,disk start_time, ip_port from user, emulator where user.id=emulator.user_id";
 	console.log("Query is:"+sqlStr);
 	
@@ -97,11 +96,11 @@ function request(req,res){
 		console.log(rows.length);
 		if(rows.length !== 0) {		
 				
-				res.json({'requests': rows});
+				res.json({'emulators': rows});
 			
 		}else{
 			//res.send({'errorMessage': "Please enter a valid email and password"});
-			console.log("no requests");
+			console.log("no emulators");
 			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
 		}
 	});
@@ -223,16 +222,13 @@ function bill(req,res){
 								
 								console.log(rows.length);
 								if(rows.length !== 0) {		
-										
 										res.json({'bills': bills,'totalcost':rows[0].totalcost});
-									
 								}else{
 									//res.send({'errorMessage': "Please enter a valid email and password"});
 									console.log("no bills");
 									//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
 								}
 							});
-							
 						}else{
 							//res.send({'errorMessage': "Please enter a valid email and password"});
 							console.log("no bills");
@@ -242,9 +238,7 @@ function bill(req,res){
 				}
 			});
 		}
-			
 	});
-
 }
 
 function afterSignUp(req,res)
@@ -261,13 +255,10 @@ function afterSignUp(req,res)
 			//res.send({'errorMessage': "Please enster a valid email and password"});
 			console.log("ERROR: " + err.message);
 			//res.render({errorMessage: 'Sign Up Fail!'});
-			
 		}else{
 			res.json({'signup': 'Success'});
-
 		}
 	});
-
 }
 
 function loadPipData(req,res)
@@ -280,12 +271,7 @@ function loadPipData(req,res)
 		
 		console.log(rows.length);
 		if(rows.length !== 0) {		
-			
-						
 				res.json({'pip': rows});
-					
-			
-			
 		}else{
 			 res.json({'pip': 'null'});
 			//res.send({'errorMessage': "Please enter a valid email and password"});
@@ -295,11 +281,9 @@ function loadPipData(req,res)
 	});
 }
 
-
-
 exports.afterSignIn=afterSignIn;
 exports.launch=launch;
-exports.request=request;
+exports.emulators=emulators;
 exports.afterSignUp=afterSignUp;
 exports.usage=usage;
 exports.usageDetail=usageDetail;

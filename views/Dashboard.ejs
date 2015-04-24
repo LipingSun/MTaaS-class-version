@@ -81,7 +81,7 @@
                 </li>
                 <li ng-class="{ active:tab === 1 }"><a href ng-click="tab=1;usage()">Users</a>
                 </li>
-                <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;request()">Requests</a>
+                <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;emulator()">Requests</a>
                 </li>
                 <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3;mobile()">Emulator</a>
                 </li>
@@ -89,77 +89,109 @@
                 </li>
             </ul>
         </div>
+    </div>
 
-        <div ng-show="tab === 0" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Dashboard</h1>
+    <div ng-show="tab === 0" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Dashboard</h1>
 
-            <div class="row placeholders">
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <div id="canvas-holder">
-                        <canvas id="chart-area1" width="150" height="150"/>
-                    </div>
-                    <h4>HOST 1</h4>
-                    <span class="text-muted">{{instance[0].ip}}</span>
+        <div class="row placeholders">
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area1" width="150" height="150"/>
                 </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <div id="canvas-holder">
-                        <canvas id="chart-area2" width="150" height="150"/>
-                    </div>
-                    <h4>HOST 2</h4>
-                    <span class="text-muted">{{instance[1].ip}}</span>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <div id="canvas-holder">
-                        <canvas id="chart-area3" width="150" height="150"/>
-                    </div>
-                    <h4>HOST 3</h4>
-                    <span class="text-muted">{{instance[2].ip}}</span>
-                </div>
+                <h4>HOST 1</h4>
+                <span class="text-muted">{{instance[0].ip}}</span>
             </div>
-
-
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area2" width="150" height="150"/>
+                </div>
+                <h4>HOST 2</h4>
+                <span class="text-muted">{{instance[1].ip}}</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area3" width="150" height="150"/>
+                </div>
+                <h4>HOST 3</h4>
+                <span class="text-muted">{{instance[2].ip}}</span>
+            </div>
         </div>
 
-        <div ng-show="tab === 1" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Users</h1>
+        <h1 class="page-header">Emulator</h1>
 
-
-            <table ng-table="tableUsers" class="table">
-                <tr ng-repeat="user in user_data">
+        <div class="table-responsive">
+            <table ng-table="tableRequest" class="table table-striped">
+                <tr ng-repeat="emulator in emulator_data">
+                    <td data-title="'REQUEST ID'" sortable="'id'">
+                        {{emulator.id}}
+                    </td>
                     <td data-title="'USER NAME'" sortable="'username'">
-                        <a ng-click="showdetail(user.id)">{{user.username}}</a>
+                        {{emulator.username}}
                     </td>
-                    <td data-title="'MOBILE NUM'" sortable="'number'">
-                        {{user.number}}
+                    <td data-title="'VERSION'" sortable="'version'">
+                        {{emulator.version}}
                     </td>
-                    <td data-title="'RAM (M)'" sortable="'totalram'">
-                        {{user.totalram}}
+                    <td data-title="'CPU'" sortable="'cpu'">
+                        {{emulator.cpu}}
                     </td>
-                    <td data-title="'DISK (M)'" sortable="'totaldisk'">
-                        {{user.totaldisk}}
+                    <td data-title="'RAM (M)'" sortable="'ram'">
+                        {{emulator.ram}}
                     </td>
-                    <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">
-                        {{user.runtime}}
+                    <td data-title="'DISK (M)'" sortable="'disk'">
+                        {{emulator.disk}}
                     </td>
-                    <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
-                        {{user.totalcost}}
+                    <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
+                        {{emulator.start_time}}
+                    </td>
+                    <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
+                        {{emulator.ip_port}}
                     </td>
                 </tr>
             </table>
-            <div ng-show="usagedetail">
-                <table ng-table="tableDetails" class="table">
-                    <tr ng-repeat="usage in usage_data">
-                        <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
-                        <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
-                        <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
-                        <td data-title="'RAM (M)'" sortable="'ram'">{{usage.ram}}</td>
-                        <td data-title="'DISK (M)'" sortable="'disk'">{{usage.disk}}</td>
-                        <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
-                        <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
-                        <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
-                    </tr>
-                </table>
-            </div>
+        </div>
+
+    </div>
+
+    <div ng-show="tab === 1" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Users</h1>
+
+
+        <table ng-table="tableUsers" class="table">
+            <tr ng-repeat="user in user_data">
+                <td data-title="'USER NAME'" sortable="'username'">
+                    <a ng-click="showdetail(user.id)">{{user.username}}</a>
+                </td>
+                <td data-title="'MOBILE NUM'" sortable="'number'">
+                    {{user.number}}
+                </td>
+                <td data-title="'RAM (M)'" sortable="'totalram'">
+                    {{user.totalram}}
+                </td>
+                <td data-title="'DISK (M)'" sortable="'totaldisk'">
+                    {{user.totaldisk}}
+                </td>
+                <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">
+                    {{user.runtime}}
+                </td>
+                <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
+                    {{user.totalcost}}
+                </td>
+            </tr>
+        </table>
+        <div ng-show="usagedetail">
+            <table ng-table="tableDetails" class="table">
+                <tr ng-repeat="usage in usage_data">
+                    <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
+                    <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
+                    <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">{{usage.ram}}</td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">{{usage.disk}}</td>
+                    <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
+                    <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
+                    <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -169,7 +201,7 @@
 
         <div class="table-responsive">
             <table ng-table="tableRequest" class="table table-striped">
-                <tr ng-repeat="user in request_data">
+                <tr ng-repeat="user in emulator_data">
                     <td data-title="'REQUEST ID'" sortable="'id'">
                         {{user.id}}
                     </td>
@@ -234,7 +266,6 @@
         </form>
     </div>
 
-
     <div ng-show="tab === 4" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Billing</h1>
         <table ng-table="tableBilling" class="table">
@@ -265,7 +296,6 @@
 
         </table>
     </div>
-</div>
 </div>
 
 <script>
@@ -332,6 +362,19 @@
             window.myPie = new Chart(ctx3).Pie(pieData3);
 
         });
+        $http.get('/emulators').success(function (res) {
+            //  alert(JSON.stringify(res));
+            $scope.emulator_data = res.emulators;
+            $scope.tableRequest = new ngTableParams({
+                page: 1, // show first page
+                count: 5 // count per page
+            }, {
+                total: $scope.emulator_data.length, // length of data
+                getData: function ($defer, params) {
+                    $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+            });
+        });
 
         $scope.usage = function () {
             $scope.usagedetail = 0;
@@ -387,17 +430,17 @@
 
         };
 
-        $scope.request = function () {
-            $http.get('/request').success(function (res) {
+        $scope.emulator = function () {
+            $http.get('/emulator').success(function (res) {
                 //  alert(JSON.stringify(res));
-                $scope.request_data = res.requests;
+                $scope.emulator_data = res.requests;
                 $scope.tableRequest = new ngTableParams({
                     page: 1, // show first page
                     count: 5 // count per page
                 }, {
-                    total: $scope.request_data.length, // length of data
+                    total: $scope.emulator_data.length, // length of data
                     getData: function ($defer, params) {
-                        $defer.resolve($scope.request_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                        $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                     }
                 });
             });
@@ -459,9 +502,6 @@
             };
         };
     });
-</script>
-<script>
-
 </script>
 
 <!-- Bootstrap core JavaScript
