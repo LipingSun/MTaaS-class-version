@@ -81,7 +81,7 @@
                 </li>
                 <li ng-class="{ active:tab === 1 }"><a href ng-click="tab=1;usage()">Users</a>
                 </li>
-                <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;emulator()">Requests</a>
+                <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;request()">Requests</a>
                 </li>
                 <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3;mobile()">Emulator</a>
                 </li>
@@ -183,7 +183,6 @@
         <div ng-show="usagedetail">
             <table ng-table="tableDetails" class="table">
                 <tr ng-repeat="usage in usage_data">
-
                     <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
                     <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
                     <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
@@ -192,10 +191,7 @@
                     <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
                     <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
                     <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
-
                 </tr>
-
-
             </table>
         </div>
     </div>
@@ -206,30 +202,24 @@
 
         <div class="table-responsive">
             <table ng-table="tableRequest" class="table table-striped">
-                <tr ng-repeat="user in request_data">
+                <tr ng-repeat="request in request_data">
                     <td data-title="'REQUEST ID'" sortable="'id'">
-                        {{user.id}}
+                        {{request.id}}
                     </td>
                     <td data-title="'USER NAME'" sortable="'username'">
-                        {{user.username}}
+                        {{request.user_id}}
                     </td>
                     <td data-title="'VERSION'" sortable="'version'">
-                        {{user.version}}
+                        {{request.version}}
                     </td>
                     <td data-title="'CPU'" sortable="'cpu'">
-                        {{user.cpu}}
+                        {{request.cpu}}
                     </td>
                     <td data-title="'RAM (M)'" sortable="'ram'">
-                        {{user.ram}}
+                        {{request.ram}}
                     </td>
                     <td data-title="'DISK (M)'" sortable="'disk'">
-                        {{user.disk}}
-                    </td>
-                    <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
-                        {{user.start_time}}
-                    </td>
-                    <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
-                        {{user.ip_port}}
+                        {{request.disk}}
                     </td>
                 </tr>
             </table>
@@ -313,10 +303,8 @@
                 <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{bill.runtime}}</td>
                 <td data-title="'STATUS'" sortable="'status'">{{bill.status}}</td>
                 <td data-title="'COST ($)'" sortable="'cost'">{{bill.cost}}</td>
-
             </tr>
             <tr>
-
                 <td data-title="'MOBILE ID'"></td>
                 <td data-title="'VERSION'"></td>
                 <td data-title="'CPU'"></td>
@@ -325,9 +313,7 @@
                 <td data-title="'RUNTIME (MINs)'"></td>
                 <td data-title="'STATUS'">TOTAL COST:</td>
                 <td data-title="'COST ($)'">{{totalcost}}</td>
-
             </tr>
-
         </table>
     </div>
 </div>
@@ -464,17 +450,17 @@
 
         };
 
-        $scope.emulator = function () {
-            $http.get('/emulator').success(function (res) {
+        $scope.request = function () {
+            $http.get('/request').success(function (res) {
                 //  alert(JSON.stringify(res));
-                $scope.emulator_data = res.requests;
+                $scope.request_data = res.requests;
                 $scope.tableRequest = new ngTableParams({
                     page: 1, // show first page
                     count: 5 // count per page
                 }, {
-                    total: $scope.emulator_data.length, // length of data
+                    total: $scope.request_data.length, // length of data
                     getData: function ($defer, params) {
-                        $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                        $defer.resolve($scope.request_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                     }
                 });
             });

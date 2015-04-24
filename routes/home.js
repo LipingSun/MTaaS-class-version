@@ -341,6 +341,27 @@ function runningEmulator(req,res){
 	
 }
 
+function request(req,res) {
+	var sqlStr="select id, user_id, version, cpu, ram, disk, number from request";
+	console.log("Query is:"+sqlStr);
+
+	var params = [];
+	query.execQuery(sqlStr, params, function(err, rows) {
+
+		console.log(rows.length);
+		if(rows.length !== 0) {
+
+			res.json({'requests': rows});
+
+		}else{
+			//res.send({'errorMessage': "Please enter a valid email and password"});
+			console.log("no requests");
+			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
+		}
+	});
+
+}
+
 
 exports.afterSignIn=afterSignIn;
 exports.launch=launch;
@@ -351,4 +372,5 @@ exports.usageDetail=usageDetail;
 exports.bill=bill;
 exports.loadPipData=loadPipData;
 exports.runningEmulator=runningEmulator;
+exports.request = request;
 
