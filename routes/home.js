@@ -58,7 +58,7 @@ function launch(req,res)
 				var sqlStr="Insert into emulator (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
 				console.log("Query is:"+sqlStr);
 				
-				var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk'),new Date()];
+				var params = [req.session.user_id,req.param('version'),req.param('cpu'),req.param('ram'),req.param('disk')];
 				query.execQuery(sqlStr, params, function(err, rows) {
 					if(err){
 						//res.send({'errorMessage': "Please enter a valid email and password"});
@@ -67,11 +67,24 @@ function launch(req,res)
 						
 					}else{
 						console.log(rows.insertId);
-						emulator.create('8.21.28.162', rows.insertId, function (err, data) {
+						emulator.create('8.21.28.191', rows.insertId, function (err, data) {
 							if (!err) {
 								console.log(data.port);
-
-								res.json({'Status': ' Success', 'info': data});
+								var ip_port="8.21.28.191: "+data.port;
+								var sqlStr="update emulator set ip_port=?, start_time=?, status=? where id=?";
+								console.log("Query is:"+sqlStr);
+				
+								var params = [ip_port, new Date(), 'run',rows.insertId];
+								query.execQuery(sqlStr, params, function(err, rows) {
+									if(err){
+											//res.send({'errorMessage': "Please enter a valid email and password"});
+										console.log("ERROR: " + err.message);
+										//res.render({errorMessage: 'Sign Up Fail!'});
+							
+									}else{
+										console.log('Success');
+									}
+								});
 							} else {
 								console.log('Error: ' + error);
 							}
@@ -80,8 +93,22 @@ function launch(req,res)
 					}
 				});
 			}
-
+			res.json({"launchStatus": ' Success'});
 		}
+	});
+
+	var sqlStr="update instance set emulator_number=(emulator_number+?) where ip=?";
+	console.log("Query is:"+sqlStr);
+	//for(var p in mobile)
+	//consloe.log(p+": "+mobile[p]);
+	var params = [req.param('number'),'8.21.28.191'];
+
+	query.execQuery(sqlStr, params, function(err, rows) {
+		if(!err){
+			console.log("Sucess");
+		}
+		else
+			console.log("fail");
 	});
 
 }
@@ -89,22 +116,22 @@ function launch(req,res)
 function emulators(req,res){
 	var sqlStr="select emulator.id, username, version, cpu, ram,disk start_time, ip_port from user, emulator where user.id=emulator.user_id";
 	console.log("Query is:"+sqlStr);
-	
+
 	var params = [];
 	query.execQuery(sqlStr, params, function(err, rows) {
-		
+
 		console.log(rows.length);
-		if(rows.length !== 0) {		
-				
-				res.json({'emulators': rows});
-			
+		if(rows.length !== 0) {
+
+			res.json({'emulators': rows});
+
 		}else{
 			//res.send({'errorMessage': "Please enter a valid email and password"});
 			console.log("no emulators");
 			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
 		}
 	});
-	
+
 }
 
 function usage(req,res){
@@ -222,13 +249,16 @@ function bill(req,res){
 								
 								console.log(rows.length);
 								if(rows.length !== 0) {		
+										
 										res.json({'bills': bills,'totalcost':rows[0].totalcost});
+									
 								}else{
 									//res.send({'errorMessage': "Please enter a valid email and password"});
 									console.log("no bills");
 									//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
 								}
 							});
+							
 						}else{
 							//res.send({'errorMessage': "Please enter a valid email and password"});
 							console.log("no bills");
@@ -238,7 +268,9 @@ function bill(req,res){
 				}
 			});
 		}
+			
 	});
+
 }
 
 function afterSignUp(req,res)
@@ -255,10 +287,13 @@ function afterSignUp(req,res)
 			//res.send({'errorMessage': "Please enster a valid email and password"});
 			console.log("ERROR: " + err.message);
 			//res.render({errorMessage: 'Sign Up Fail!'});
+			
 		}else{
 			res.json({'signup': 'Success'});
+
 		}
 	});
+
 }
 
 function loadPipData(req,res)
@@ -271,7 +306,12 @@ function loadPipData(req,res)
 		
 		console.log(rows.length);
 		if(rows.length !== 0) {		
+			
+						
 				res.json({'pip': rows});
+					
+			
+			
 		}else{
 			 res.json({'pip': 'null'});
 			//res.send({'errorMessage': "Please enter a valid email and password"});
@@ -280,6 +320,27 @@ function loadPipData(req,res)
 		}
 	});
 }
+function runningEmulator(req,res){
+	var sqlStr="select id, version, cpu, ram,disk, start_time, ip_port where user_id=?";
+	console.log("Query is:"+sqlStr);
+	
+	var params = [req.session.user_id];
+	query.execQuery(sqlStr, params, function(err, rows) {
+		
+		console.log(rows.length);
+		if(rows.length !== 0) {		
+				
+				res.json({'requests': rows});
+			
+		}else{
+			//res.send({'errorMessage': "Please enter a valid email and password"});
+			console.log("no requests");
+			//res.render('signin', {errorMessage: 'Please enter a valid email and password'});
+		}
+	});
+	
+}
+
 
 exports.afterSignIn=afterSignIn;
 exports.launch=launch;
@@ -289,4 +350,5 @@ exports.usage=usage;
 exports.usageDetail=usageDetail;
 exports.bill=bill;
 exports.loadPipData=loadPipData;
+exports.runningEmulator=runningEmulator;
 

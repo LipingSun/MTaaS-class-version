@@ -161,6 +161,7 @@
             <tr ng-repeat="user in user_data">
                 <td data-title="'USER NAME'" sortable="'username'">
                     <a ng-click="showdetail(user.id)">{{user.username}}</a>
+
                 </td>
                 <td data-title="'MOBILE NUM'" sortable="'number'">
                     {{user.number}}
@@ -182,6 +183,7 @@
         <div ng-show="usagedetail">
             <table ng-table="tableDetails" class="table">
                 <tr ng-repeat="usage in usage_data">
+
                     <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
                     <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
                     <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
@@ -190,7 +192,10 @@
                     <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
                     <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
                     <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
+
                 </tr>
+
+
             </table>
         </div>
     </div>
@@ -201,7 +206,7 @@
 
         <div class="table-responsive">
             <table ng-table="tableRequest" class="table table-striped">
-                <tr ng-repeat="user in emulator_data">
+                <tr ng-repeat="user in request_data">
                     <td data-title="'REQUEST ID'" sortable="'id'">
                         {{user.id}}
                     </td>
@@ -233,8 +238,36 @@
 
     <div ng-show="tab === 3" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-        <h1 class="page-header">Emulator</h1>
+        <h1 class="page-header">Running Emulator</h1>
 
+        <table ng-table="tableRunningRequest" class="table table-striped">
+            <tr ng-repeat="user in run_request_data">
+                <td data-title="'REQUEST ID'" sortable="'id'">
+                    {{user.id}}
+                </td>
+                <td data-title="'USER NAME'" sortable="'username'">
+                    {{user.username}}
+                </td>
+                <td data-title="'VERSION'" sortable="'version'">
+                    {{user.version}}
+                </td>
+                <td data-title="'CPU'" sortable="'cpu'">
+                    {{user.cpu}}
+                </td>
+                <td data-title="'RAM (M)'" sortable="'ram'">
+                    {{user.ram}}
+                </td>
+                <td data-title="'DISK (M)'" sortable="'disk'">
+                    {{user.disk}}
+                </td>
+                <td data-title="'START TIME'" sortable="'start_time'">
+                    {{user.start_time}}
+                </td>
+                <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
+                    {{user.ip_port}}
+                </td>
+            </tr>
+        </table>
         <form id="mobile">
             <fieldset>
                 <div class="form-group">
@@ -265,6 +298,7 @@
             </fieldset>
         </form>
     </div>
+
 
     <div ng-show="tab === 4" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1 class="page-header">Billing</h1>
@@ -302,11 +336,11 @@
     var app = angular.module('myApp', ['ngTable']);
     app.controller('DashboardCtrl', function ($scope, $http, ngTableParams) {
         $http.get('/loadPipData').success(function (res) {
-//	        	alert(JSON.stringify(res));
+            //alert(JSON.stringify(res));
             $scope.instance = res.pip;
             var allocated = $scope.instance[0]['emulator_number'];
             var total = $scope.instance[0]['emulator_limit'];
-//             alert((total-allocated));
+            // alert((total-allocated));        
             var pieData1 = [
                 {
                     value: allocated,
@@ -477,6 +511,20 @@
         };
 
         $scope.mobile = function () {
+
+            $http.get('/runningEmulator').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.run_request_data = res.requests;
+                $scope.tableRunningRequest = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.run_request_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.run_request_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
             $scope.versions = ["5.0.1 (API 21)", "4.4.2 (API 19)", "2.3.3 (API 10)"];
             $scope.cpus = ["armeabi-v7a", "x86", "x86_64"];
             $scope.rams = [64, 128, 256, 512];
@@ -496,7 +544,7 @@
 
                 }).success(function (res) {
                     if (res.launchStatus == 'Success')
-//		          			alert('success');
+                    //alert('success');
                         window.location.assign('/toDashboard');
                 });
             };
@@ -505,7 +553,7 @@
 </script>
 
 <!-- Bootstrap core JavaScript
-    ================================================== -->
+  ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/stylesheets/js/jquery.min.js"></script>
 <script src="/stylesheets/js/bootstrap.min.js"></script>
