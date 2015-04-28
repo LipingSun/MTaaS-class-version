@@ -114,7 +114,7 @@ function launch(req,res)
 }
 
 function emulators(req,res){
-	var sqlStr="select emulator.id, username, version, cpu, ram,disk start_time, ip_port from user, emulator where user.id=emulator.user_id";
+	var sqlStr="select emulator.id, username, version, cpu, ram, disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port from user, emulator where user.id=emulator.user_id";
 	console.log("Query is:"+sqlStr);
 
 	var params = [];

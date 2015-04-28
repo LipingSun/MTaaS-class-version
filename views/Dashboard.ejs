@@ -142,7 +142,7 @@
                         {{emulator.disk}}
                     </td>
                     <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
-                        {{emulator.start_time}}
+                        {{emulator.runtime}}
                     </td>
                     <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
                         {{emulator.ip_port}}
@@ -228,8 +228,36 @@
 
     <div ng-show="tab === 3" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-        <h1 class="page-header">Running Emulator</h1>
+        <h1 class="page-header">Emulator</h1>
 
+        <form id="mobile">
+            <fieldset>
+                <div class="form-group">
+                    <label for="android-version">Android Version</label>
+                    <select ng-model="mobile_version" ng-options="version for version in versions" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="cpu">CPU</label>
+                    <select ng-model="mobile_cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ram">RAM (M)</label>
+                    <select ng-model="mobile_ram" ng-options="ram for ram in rams" class="form-control"></select>
+
+                </div>
+                <div class="form-group">
+                    <label for="disk">DISK (M)</label>
+                    <select ng-model="mobile_disk" ng-options="disk for disk in disks" class="form-control"></select>
+
+                </div>
+                <div class="form-group">
+                    <label for="number">NUMBER</label>
+                    <input ng-model="mobile_number" ng-init="mobile_number = 1" type="number" name="number" value="1" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary form-group" ng-click="launch()">Launch</button>
+            </fieldset>
+        </form>
         <table ng-table="tableRunningRequest" class="table table-striped">
             <tr ng-repeat="user in run_request_data">
                 <td data-title="'REQUEST ID'" sortable="'id'">
@@ -258,35 +286,6 @@
                 </td>
             </tr>
         </table>
-        <form id="mobile">
-            <fieldset>
-                <div class="form-group">
-                    <label for="android-version">Android Version</label>
-                    <select ng-model="mobile_version" ng-options="version for version in versions" class="form-control"></select>
-
-                </div>
-                <div class="form-group">
-                    <label for="cpu">CPU</label>
-                    <select ng-model="mobile_cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
-                </div>
-
-                <div class="form-group">
-                    <label for="ram">RAM (M)</label>
-                    <select ng-model="mobile_ram" ng-options="ram for ram in rams" class="form-control"></select>
-
-                </div>
-                <div class="form-group">
-                    <label for="disk">DISK (M)</label>
-                    <select ng-model="mobile_disk" ng-options="disk for disk in disks" class="form-control"></select>
-
-                </div>
-                <div class="form-group">
-                    <label for="number">NUMBER</label>
-                    <input ng-model="mobile_number" type="number" name="number" value="1" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-primary" ng-click="launch()">Launch</button>
-            </fieldset>
-        </form>
     </div>
 
 
@@ -320,7 +319,7 @@
 
 <script>
     var app = angular.module('myApp', ['ngTable']);
-    app.controller('DashboardCtrl', function ($scope, $http, ngTableParams) {
+    app.controller('DashboardCtrl', function ($scope, $http, $filter, ngTableParams) {
         $http.get('/loadPipData').success(function (res) {
             //alert(JSON.stringify(res));
             $scope.instance = res.pip;
@@ -391,7 +390,8 @@
             }, {
                 total: $scope.emulator_data.length, // length of data
                 getData: function ($defer, params) {
-                    $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    var orderedData = params.sorting()?$filter('orderBy')($scope.emulator_data, params.orderBy()):$scope.emulator_data;
+                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
             });
         });
@@ -472,18 +472,6 @@
                 // alert(JSON.stringify(res));
                 $scope.bill_data = res.bills;
                 $scope.totalcost = res.totalcost;
-                /*   var total=0;
-                 var bills=res.bills;
-                 // alert(bills.length);
-                 //alert(bills[0]["cost"]);
-
-                 for(var i=0;i< bills.length;i++){
-                 alert(bills[i]["cost"]);
-                 total=total+ bills[i]["cost"];
-
-                 }
-                 $scope.totalcost=total;*/
-
                 $scope.tableBilling = new ngTableParams({
                     page: 1, // show first page
                     count: 5 // count per page
@@ -498,23 +486,14 @@
 
         $scope.mobile = function () {
 
-            $http.get('/runningEmulator').success(function (res) {
-                //  alert(JSON.stringify(res));
-                $scope.run_request_data = res.requests;
-                $scope.tableRunningRequest = new ngTableParams({
-                    page: 1, // show first page
-                    count: 5 // count per page
-                }, {
-                    total: $scope.run_request_data.length, // length of data
-                    getData: function ($defer, params) {
-                        $defer.resolve($scope.run_request_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                    }
-                });
-            });
             $scope.versions = ["5.0.1 (API 21)", "4.4.2 (API 19)", "2.3.3 (API 10)"];
+            $scope.mobile_version = $scope.versions[0];
             $scope.cpus = ["armeabi-v7a", "x86", "x86_64"];
+            $scope.mobile_cpu = $scope.cpus[0];
             $scope.rams = [64, 128, 256, 512];
+            $scope.mobile_ram = $scope.rams[0];
             $scope.disks = [128, 256, 512, 1024];
+            $scope.mobile_disk = $scope.disks[0];
 
             $scope.launch = function () {
                 $http({
