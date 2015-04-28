@@ -7,7 +7,7 @@ var emulator = {};
 
 emulator.list = function (ip, next) {
     var url = 'http://' + ip + ':8888/emulator';
-    request.get(url, function(error, response, body) {
+    request.get(url, function (error, response, body) {
         if (!error) {
             console.log('Response Code: ' + response.statusCode);
             if (response.statusCode == 200) {
@@ -26,7 +26,7 @@ emulator.list = function (ip, next) {
 
 emulator.read = function (ip, id, next) {
     var url = 'http://' + ip + ':8888/emulator';
-    request.get(url + '?id=' + id, function(error, response, body) {
+    request.get(url + '?id=' + id, function (error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
@@ -43,7 +43,7 @@ emulator.read = function (ip, id, next) {
 };
 
 emulator.create = function (ip, id, next) {
-    request.post(url, {body: {'id': Number(id)}, json: true}, function(error, response, body) {
+    request.post(url, {body: {'id': Number(id)}, json: true}, function (error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
@@ -61,7 +61,7 @@ emulator.create = function (ip, id, next) {
 };
 
 emulator.delete = function (ip, id, next) {
-    request.del(url, {body: {'id': Number(id)}, json: true}, function(error, response, body) {
+    request.del(url, {body: {'id': Number(id)}, json: true}, function (error, response, body) {
         if (!error) {
             console.log('Response code: ' + response.statusCode);
             if (response.statusCode == 200) {
