@@ -53,7 +53,7 @@ function launch(req, res) {
 
         } else {
             for (var i = 0; i < req.param('number'); i++) {
-                var sqlStr = "Insert into emulator (`user_id`, `version`, `cpu`, `ram`, `disk`,`start_time`) VALUES (?,?,?,?,?,?)";
+                var sqlStr = "Insert into emulator (`user_id`, `version`, `cpu`, `ram`, `disk`) VALUES (?,?,?,?,?)";
                 console.log("Query is:" + sqlStr);
 
                 var params = [req.session.user_id, req.param('version'), req.param('cpu'), req.param('ram'), req.param('disk')];
@@ -65,10 +65,10 @@ function launch(req, res) {
 
                     } else {
                         console.log(rows.insertId);
-                        emulator.create('8.21.28.191', rows.insertId, function (err, data) {
+                        emulator.create('8.21.28.199', rows.insertId, function (err, data) {
                             if (!err) {
                                 console.log(data.port);
-                                var ip_port = "8.21.28.191: " + data.port;
+                                var ip_port = "8.21.28.199: " + data.port;
                                 var sqlStr = "update emulator set ip_port=?, start_time=?, status=? where id=?";
                                 console.log("Query is:" + sqlStr);
 
@@ -80,6 +80,7 @@ function launch(req, res) {
                                         //res.render({errorMessage: 'Sign Up Fail!'});
 
                                     } else {
+                                        res.json({"launchStatus": 'Success'});
                                         console.log('Success');
                                     }
                                 });
@@ -91,7 +92,7 @@ function launch(req, res) {
                     }
                 });
             }
-            res.json({"launchStatus": ' Success'});
+
         }
     });
 
@@ -99,7 +100,7 @@ function launch(req, res) {
     console.log("Query is:" + sqlStr);
     //for(var p in mobile)
     //consloe.log(p+": "+mobile[p]);
-    var params = [req.param('number'), '8.21.28.191'];
+    var params = [req.param('number'), '8.21.28.199'];
 
     query.execQuery(sqlStr, params, function (err, rows) {
         if (!err) {
@@ -111,6 +112,40 @@ function launch(req, res) {
 
 }
 
+
+function terminateEmulator(req, res) {
+    var end_time = new Date();
+    console.log("id" + req.param('id') + " endtime" + end_time);
+
+    var sqlStr = "update emulator t set t.end_time=?,status='terminated' where id=?";
+
+    var params = [end_time, req.param('id')];
+    query.execQuery(sqlStr, params, function (err, rows) {
+        if (err) {
+            //res.send({'errorMessage': "Please enster a valid email and password"});
+            console.log("ERROR: " + err.message);
+            //res.render({errorMessage: 'Sign Up Fail!'});
+
+        } else {
+            var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where id=?";
+            var params = [req.param('id')];
+            query.execQuery(sqlStr, params, function (err, rows) {
+                if (err) {
+                    //res.send({'errorMessage': "Please enster a valid email and password"});
+                    console.log("ERROR: " + err.message);
+                    //res.render({errorMessage: 'Sign Up Fail!'});
+
+                } else {
+                    res.json({"terminateStatus": 'Success'});
+                    console.log('Success');
+
+                }
+            });
+        }
+    });
+
+
+}
 function emulators(req, res) {
     var sqlStr = "select emulator.id, username, version, cpu, ram, disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port from user, emulator where user.id=emulator.user_id";
     console.log("Query is:" + sqlStr);
@@ -145,7 +180,7 @@ function usage(req, res) {
 
         } else {
             console.log("end time updated");
-            var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time)";
+            var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where status='run'";
 
             var params = [];
             query.execQuery(sqlStr, params, function (err, rows) {
@@ -177,9 +212,7 @@ function usage(req, res) {
         }
 
     });
-
 }
-
 
 function usageDetail(req, res) {
 
@@ -204,7 +237,6 @@ function usageDetail(req, res) {
         }
     });
 }
-
 
 function bill(req, res) {
 
@@ -313,25 +345,23 @@ function loadPipData(req, res) {
         }
     });
 }
-function runningEmulator(req, res) {
-    var sqlStr = "select id, version, cpu, ram,disk, start_time, ip_port where user_id=?";
+
+function userEmulator(req, res) {
+    var sqlStr = "select id, version, cpu, ram,disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port from emulator where user_id=? and status=?";
     console.log("Query is:" + sqlStr);
 
-    var params = [req.session.user_id];
+    var params = [req.session.user_id, "run"];
     query.execQuery(sqlStr, params, function (err, rows) {
 
         console.log(rows.length);
         if (rows.length !== 0) {
-
-            res.json({'requests': rows});
-
+            res.json({'emulators': rows});
         } else {
             //res.send({'errorMessage': "Please enter a valid email and password"});
             console.log("no requests");
             //res.render('signin', {errorMessage: 'Please enter a valid email and password'});
         }
     });
-
 }
 
 function request(req, res) {
@@ -364,6 +394,6 @@ exports.usage = usage;
 exports.usageDetail = usageDetail;
 exports.bill = bill;
 exports.loadPipData = loadPipData;
-exports.runningEmulator = runningEmulator;
+exports.userEmulator = userEmulator;
+exports.terminateEmulator = terminateEmulator;
 exports.request = request;
-

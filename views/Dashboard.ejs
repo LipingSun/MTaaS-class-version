@@ -60,7 +60,7 @@
                 </li>
                 <li><a href ng-click="tab = 2;request()">Requests</a>
                 </li>
-                <li><a href ng-click="tab = 3;mobile()">Emulator</a>
+                <li><a href ng-click="tab = 3;mobile(); userEmulator();">Emulator</a>
                 </li>
                 <li><a href ng-click="tab = 4;billing()">Billing</a>
                 </li>
@@ -79,11 +79,11 @@
                 <li ng-class="{ active:tab === 0 }"><a href ng-click="tab = 0;main()">Overview
                         <span class="sr-only">(current)</span></a>
                 </li>
-                <li ng-class="{ active:tab === 1 }"><a href ng-click="tab=1;usage()">Users</a>
+                <li ng-class="{ active:tab === 1 }"><a href ng-click="tab = 1;usage()">Users</a>
                 </li>
                 <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;request()">Requests</a>
                 </li>
-                <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3;mobile()">Emulator</a>
+                <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3;mobile(); userEmulator();">Emulator</a>
                 </li>
                 <li ng-class="{ active:tab === 4 }"><a href ng-click="tab = 4;billing()">Billing</a>
                 </li>
@@ -121,9 +121,9 @@
         <h1 class="page-header">Emulator</h1>
 
         <div class="table-responsive">
-            <table ng-table="tableRequest" class="table table-striped">
+            <table ng-table="tableEmulator" class="table table-striped">
                 <tr ng-repeat="emulator in emulator_data">
-                    <td data-title="'REQUEST ID'" sortable="'id'">
+                    <td data-title="'Emulator ID'" sortable="'id'">
                         {{emulator.id}}
                     </td>
                     <td data-title="'USER NAME'" sortable="'username'">
@@ -201,7 +201,7 @@
 
 
         <div class="table-responsive">
-            <table ng-table="tableRequest" class="table table-striped">
+            <table ng-table="tableEmulator" class="table table-striped">
                 <tr ng-repeat="request in request_data">
                     <td data-title="'REQUEST ID'" sortable="'id'">
                         {{request.id}}
@@ -258,34 +258,37 @@
                 <button type="submit" class="btn btn-primary form-group" ng-click="launch()">Launch</button>
             </fieldset>
         </form>
-        <table ng-table="tableRunningRequest" class="table table-striped">
-            <tr ng-repeat="user in run_request_data">
-                <td data-title="'REQUEST ID'" sortable="'id'">
-                    {{user.id}}
-                </td>
-                <td data-title="'USER NAME'" sortable="'username'">
-                    {{user.username}}
-                </td>
-                <td data-title="'VERSION'" sortable="'version'">
-                    {{user.version}}
-                </td>
-                <td data-title="'CPU'" sortable="'cpu'">
-                    {{user.cpu}}
-                </td>
-                <td data-title="'RAM (M)'" sortable="'ram'">
-                    {{user.ram}}
-                </td>
-                <td data-title="'DISK (M)'" sortable="'disk'">
-                    {{user.disk}}
-                </td>
-                <td data-title="'START TIME'" sortable="'start_time'">
-                    {{user.start_time}}
-                </td>
-                <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
-                    {{user.ip_port}}
-                </td>
-            </tr>
-        </table>
+
+        <div class="table-responsive">
+            <table ng-table="tableEmulator" class="table table-striped">
+                <tr ng-repeat="emulator in userEmulator_data">
+                    <td data-title="'Emulator ID'" sortable="'id'">
+                        {{emulator.id}}
+                    </td>
+                    <td data-title="'VERSION'" sortable="'version'">
+                        {{emulator.version}}
+                    </td>
+                    <td data-title="'CPU'" sortable="'cpu'">
+                        {{emulator.cpu}}
+                    </td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">
+                        {{emulator.ram}}
+                    </td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">
+                        {{emulator.disk}}
+                    </td>
+                    <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
+                        {{emulator.runtime}}
+                    </td>
+                    <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
+                        {{emulator.ip_port}}
+                    </td>
+                    <td data-title="''">
+                        <input type="button" value="terminate" class="btn btn-primary" ng-click="terminate(emulator)">
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
 
@@ -320,81 +323,91 @@
 <script>
     var app = angular.module('myApp', ['ngTable']);
     app.controller('DashboardCtrl', function ($scope, $http, $filter, ngTableParams) {
-        $http.get('/loadPipData').success(function (res) {
-            //alert(JSON.stringify(res));
-            $scope.instance = res.pip;
-            var allocated = $scope.instance[0]['emulator_number'];
-            var total = $scope.instance[0]['emulator_limit'];
-            // alert((total-allocated));        
-            var pieData1 = [
-                {
-                    value: allocated,
-                    color: "#F7464A",
-                    highlight: "#FF5A5E",
-                    label: "Allocated"
-                },
-                {
-                    value: (total - allocated),
-                    color: "#46BFBD",
-                    highlight: "#5AD3D1",
-                    label: "Available"
-                }
+        var pip = function () {
+            $http.get('/loadPipData').success(function (res) {
+                //alert(JSON.stringify(res));
+                $scope.instance = res.pip;
+                var allocated = $scope.instance[0]['emulator_number'];
+                var total = $scope.instance[0]['emulator_limit'];
+                // alert((total-allocated));
+                var pieData1 = [
+                    {
+                        value: allocated,
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: (total - allocated),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
 
-            ];
-            var pieData2 = [
-                {
-                    value: $scope.instance[1]['emulator_number'],
-                    color: "#F7464A",
-                    highlight: "#FF5A5E",
-                    label: "Allocated"
-                },
-                {
-                    value: ($scope.instance[1]['emulator_limit'] - $scope.instance[1]['emulator_number']),
-                    color: "#46BFBD",
-                    highlight: "#5AD3D1",
-                    label: "Available"
-                }
+                ];
+                var pieData2 = [
+                    {
+                        value: $scope.instance[1]['emulator_number'],
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: ($scope.instance[1]['emulator_limit'] - $scope.instance[1]['emulator_number']),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
 
-            ];
-            var pieData3 = [
-                {
-                    value: $scope.instance[2]['emulator_number'],
-                    color: "#F7464A",
-                    highlight: "#FF5A5E",
-                    label: "Allocated"
-                },
-                {
-                    value: ($scope.instance[2]['emulator_limit'] - $scope.instance[2]['emulator_number']),
-                    color: "#46BFBD",
-                    highlight: "#5AD3D1",
-                    label: "Available"
-                }
+                ];
+                var pieData3 = [
+                    {
+                        value: $scope.instance[2]['emulator_number'],
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: ($scope.instance[2]['emulator_limit'] - $scope.instance[2]['emulator_number']),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
 
-            ];
+                ];
 
 
-            var ctx1 = document.getElementById("chart-area1").getContext("2d");
-            window.myPie = new Chart(ctx1).Pie(pieData1);
-            var ctx2 = document.getElementById("chart-area2").getContext("2d");
-            window.myPie = new Chart(ctx2).Pie(pieData2);
-            var ctx3 = document.getElementById("chart-area3").getContext("2d");
-            window.myPie = new Chart(ctx3).Pie(pieData3);
+                var ctx1 = document.getElementById("chart-area1").getContext("2d");
+                window.myPie = new Chart(ctx1).Pie(pieData1);
+                var ctx2 = document.getElementById("chart-area2").getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(pieData2);
+                var ctx3 = document.getElementById("chart-area3").getContext("2d");
+                window.myPie = new Chart(ctx3).Pie(pieData3);
 
-        });
-        $http.get('/emulators').success(function (res) {
-            //  alert(JSON.stringify(res));
-            $scope.emulator_data = res.emulators;
-            $scope.tableRequest = new ngTableParams({
-                page: 1, // show first page
-                count: 5 // count per page
-            }, {
-                total: $scope.emulator_data.length, // length of data
-                getData: function ($defer, params) {
-                    var orderedData = params.sorting() ? $filter('orderBy')($scope.emulator_data, params.orderBy()) : $scope.emulator_data;
-                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
             });
-        });
+        };
+
+        $scope.emulator = function () {
+            $http.get('/emulators').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.emulator_data = res.emulators;
+                $scope.tableEmulator = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.emulator_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+        };
+
+        $scope.main = function () {
+            pip();
+            $scope.emulator();
+        };
+        $scope.main();
 
         $scope.usage = function () {
             $scope.usagedetail = 0;
@@ -414,6 +427,7 @@
                 });
             });
         };
+
         $scope.showdetail = function (id) {
             //alert($scope.usagedetail);
 
@@ -509,10 +523,53 @@
 
                 }).success(function (res) {
                     if (res.launchStatus == 'Success')
-                    //alert('success');
-                        window.location.assign('/toDashboard');
+                        $http.get('/userEmulator').success(function (res) {
+                            //  alert(JSON.stringify(res));
+                            $scope.userEmulator_data = res.emulators;
+                        });
+
                 });
             };
+
+            $scope.terminate = function (user) {
+                var ip_addr = user.ip_port.split(":", 1);
+                //alert(ip_addr+user.id);
+                $http({
+                    method: 'POST',
+                    url: '/terminateEmulator',
+                    data: {
+                        "id": user.id,
+                        "ip": ip_addr
+
+                    }
+
+                }).success(function (res) {
+                    if (res.terminateStatus == 'Success')
+                        $http.get('/userEmulator').success(function (res) {
+
+                            //alert(JSON.stringify(res));
+                            $scope.userEmulator_data = res.emulators;
+                        });
+
+                });
+
+            };
+        };
+
+        $scope.userEmulator = function () {
+            $http.get('/userEmulator').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.userEmulator_data = res.emulators;
+                $scope.tableUserEmulator = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.userEmulator_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.userEmulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
         };
     });
 </script>

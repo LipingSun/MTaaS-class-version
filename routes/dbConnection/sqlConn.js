@@ -10,7 +10,7 @@ var pool  = mysql.createPool({
 	database : 'ad_c118a14314de2dc',
 	//port     : '3306',
 //	database : 'vlibdb',
-	connectionLimit : '10'
+	connectionLimit : '2'
 });
 
 exports.pool = pool;

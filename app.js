@@ -43,6 +43,7 @@ app.get('/test', function (req, res) {
 });
 app.get('/signin', home.afterSignIn);
 app.post('/launch', home.launch);
+app.post('/terminateEmulator', home.terminateEmulator);
 
 app.get('/toDashboard', function (req, res) {
     res.render('Dashboard');
@@ -54,7 +55,7 @@ app.get('/request', home.request);
 app.get('/usage', home.usage);
 app.get('/bill', home.bill);
 app.get('/usageDetail', home.usageDetail);
-
+app.get('/userEmulator', home.userEmulator);
 
 app.post('/signup', home.afterSignUp);
 
@@ -65,4 +66,3 @@ app.use('/emulator', emulator);
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });
-
