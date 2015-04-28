@@ -1,13 +1,12 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express')
-  , home = require('./routes/home')
-  , http = require('http')
-  , path = require('path')
-  , emulator = require('./routes/emulator');
+    , home = require('./routes/home')
+    , http = require('http')
+    , path = require('path')
+    , emulator = require('./routes/emulator');
 
 var app = express();
 
@@ -24,38 +23,37 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 
 app.use(express.cookieParser());
-app.use(express.session({ secret: 'xDDFsdfddsdfSDdbg', cookie: { maxAge: null }}));	
+app.use(express.session({secret: 'xDDFsdfddsdfSDdbg', cookie: {maxAge: null}}));
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 }
 
-app.get('/', function(req,res){
-	res.render('login');
+app.get('/', function (req, res) {
+    res.render('login');
 
 });
-app.get('/test', function(req,res){
-	res.render('test');
+app.get('/test', function (req, res) {
+    res.render('test');
 
 });
 app.get('/signin', home.afterSignIn);
-app.post('/launch',  home.launch);
+app.post('/launch', home.launch);
 
-app.get('/toDashboard',function(req,res){
-	res.render('Dashboard');
+app.get('/toDashboard', function (req, res) {
+    res.render('Dashboard');
 
 });
-app.get('/loadPipData',home.loadPipData);
+app.get('/loadPipData', home.loadPipData);
 app.get('/emulators', home.emulators);
 app.get('/request', home.request);
 app.get('/usage', home.usage);
 app.get('/bill', home.bill);
 app.get('/usageDetail', home.usageDetail);
-
 
 
 app.post('/signup', home.afterSignUp);
@@ -64,8 +62,7 @@ app.post('/signup', home.afterSignUp);
 app.use('/emulator', emulator);
 
 
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+http.createServer(app).listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + app.get('port'));
 });
 
