@@ -3,9 +3,9 @@
  */
 
 var express = require('express')
-    , home = require('./routes/home')
     , http = require('http')
     , path = require('path')
+    , home = require('./routes/home')
     , emulator = require('./routes/emulator');
 
 var app = express();
