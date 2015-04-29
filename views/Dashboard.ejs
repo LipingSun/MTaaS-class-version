@@ -141,11 +141,14 @@
                     <td data-title="'DISK (M)'" sortable="'disk'">
                         {{emulator.disk}}
                     </td>
-                    <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
+                    <td data-title="'RUNTIME (MINs)'" sortable="'start_time'">
                         {{emulator.runtime}}
                     </td>
                     <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
                         {{emulator.ip_port}}
+                    </td>
+                    <td data-title="'STATUS'" sortable="'status'">
+                        {{emulator.status}}
                     </td>
                 </tr>
             </table>
@@ -277,8 +280,8 @@
                     <td data-title="'DISK (M)'" sortable="'disk'">
                         {{emulator.disk}}
                     </td>
-                    <td data-title="'RUNTIME (HOUR)'" sortable="'start_time'">
-                        {{emulator.runtime}}
+                    <td data-title="'START TIME'" sortable="'start_time'">
+                        {{emulator.start_time}}
                     </td>
                     <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
                         {{emulator.ip_port}}
@@ -540,7 +543,6 @@
                     data: {
                         "id": user.id,
                         "ip": ip_addr
-
                     }
 
                 }).success(function (res) {
