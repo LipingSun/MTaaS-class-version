@@ -98,8 +98,6 @@ function launch(req, res) {
 
     var sqlStr = "update instance set emulator_number=(emulator_number+?) where ip=?";
     console.log("Query is:" + sqlStr);
-    //for(var p in mobile)
-    //consloe.log(p+": "+mobile[p]);
     var params = [req.param('number'), '8.21.28.199'];
 
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -117,37 +115,52 @@ function terminateEmulator(req, res) {
     var end_time = new Date();
     console.log("id" + req.param('id') + " endtime" + end_time);
 
-    var sqlStr = "update emulator t set t.end_time=?,status='terminated' where id=?";
 
-    var params = [end_time, req.param('id')];
-    query.execQuery(sqlStr, params, function (err, rows) {
-        if (err) {
-            //res.send({'errorMessage': "Please enster a valid email and password"});
-            console.log("ERROR: " + err.message);
-            //res.render({errorMessage: 'Sign Up Fail!'});
+    emulator.delete(req.body.ip, req.body.id, function () {
+        var sqlStr = "update emulator t set t.end_time=?,status='terminated' where id=?";
 
-        } else {
-            var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where id=?";
-            var params = [req.param('id')];
-            query.execQuery(sqlStr, params, function (err, rows) {
-                if (err) {
-                    //res.send({'errorMessage': "Please enster a valid email and password"});
-                    console.log("ERROR: " + err.message);
-                    //res.render({errorMessage: 'Sign Up Fail!'});
+        var params = [end_time, req.param('id')];
+        query.execQuery(sqlStr, params, function (err, rows) {
+            if (err) {
+                //res.send({'errorMessage': "Please enster a valid email and password"});
+                console.log("ERROR: " + err.message);
+                //res.render({errorMessage: 'Sign Up Fail!'});
 
-                } else {
-                    res.json({"terminateStatus": 'Success'});
-                    console.log('Success');
+            } else {
+                var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where id=?";
+                var params = [req.param('id')];
+                query.execQuery(sqlStr, params, function (err, rows) {
+                    if (err) {
+                        //res.send({'errorMessage': "Please enster a valid email and password"});
+                        console.log("ERROR: " + err.message);
+                        //res.render({errorMessage: 'Sign Up Fail!'});
 
-                }
-            });
-        }
+                    } else {
+                        res.json({"terminateStatus": 'Success'});
+                        console.log('Success');
+
+                    }
+                });
+            }
+        });
+
+        var sqlStr = "update instance set emulator_number=(emulator_number-1) where ip=?";
+        console.log("Query is:" + sqlStr);
+        params = [req.param('ip')];
+
+        query.execQuery(sqlStr, params, function (err, rows) {
+            if (!err) {
+                console.log("Sucess");
+            }
+            else
+                console.log("fail");
+        });
+
     });
-
-
 }
+
 function emulators(req, res) {
-    var sqlStr = "select emulator.id, username, version, cpu, ram, disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port from user, emulator where user.id=emulator.user_id";
+    var sqlStr = "select emulator.id, username, version, cpu, ram, disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port, status from user, emulator where user.id=emulator.user_id";
     console.log("Query is:" + sqlStr);
 
     var params = [];
@@ -347,7 +360,7 @@ function loadPipData(req, res) {
 }
 
 function userEmulator(req, res) {
-    var sqlStr = "select id, version, cpu, ram,disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port from emulator where user_id=? and status=?";
+    var sqlStr = "select id, version, cpu, ram,disk, start_time, ip_port from emulator where user_id=? and status=?";
     console.log("Query is:" + sqlStr);
 
     var params = [req.session.user_id, "run"];
