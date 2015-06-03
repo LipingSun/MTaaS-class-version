@@ -1,5 +1,5 @@
 {
-  "name": "MyLinkedin",
+  "name": "WorkforceManagementSystem",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,6 +8,13 @@
   "dependencies": {
     "express": "3.2.6",
     "ejs": "*",
-    "mysql": "2.5.5"
-  }
+    "express-session": "*",
+    "mysql": "2.5.5",
+    "squel": "*",
+    "bower": "*",
+    "pkgcloud": "*",
+    "underscore": "*",
+    "request": "*"
+  },
+  "main": "app.js"
 }

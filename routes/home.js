@@ -3,7 +3,7 @@ var mysql = require('./mysql');
 var connpool = require('./dbConnection/sqlConn');
 var query = require('./dbConnection/sqlQuery');
 var emulator = require('./emulator');
-
+var host = '8.21.28.54';
 
 function afterSignIn(req, res) {
     var sqlStr = "select * from user where username=? and password=?";
@@ -65,7 +65,7 @@ function launch(req, res) {
 
                     } else {
                         console.log(rows.insertId);
-                        emulator.create('8.21.28.199', rows.insertId, function (err, data) {
+                        emulator.create(host, rows.insertId, function (err, data) {
                             if (!err) {
                                 console.log(data.port);
                                 var ip_port = "8.21.28.199: " + data.port;
@@ -96,9 +96,9 @@ function launch(req, res) {
         }
     });
 
-    var sqlStr = "update instance set emulator_number=(emulator_number+?) where ip=?";
+    sqlStr = "update instance set emulator_number=(emulator_number+?) where ip=?";
     console.log("Query is:" + sqlStr);
-    var params = [req.param('number'), '8.21.28.199'];
+    params = [req.param('number'), host];
 
     query.execQuery(sqlStr, params, function (err, rows) {
         if (!err) {
@@ -144,7 +144,7 @@ function terminateEmulator(req, res) {
             }
         });
 
-        var sqlStr = "update instance set emulator_number=(emulator_number-1) where ip=?";
+        sqlStr = "update instance set emulator_number=(emulator_number-1) where ip=?";
         console.log("Query is:" + sqlStr);
         params = [req.param('ip')];
 
@@ -155,7 +155,6 @@ function terminateEmulator(req, res) {
             else
                 console.log("fail");
         });
-
     });
 }
 

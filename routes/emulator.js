@@ -1,7 +1,7 @@
 var request = require('request');
 express = require('express');
 
-var url = 'http://8.21.28.199:8888/emulator';
+var url = 'http://8.21.28.54:8888/emulator';
 
 var emulator = {};
 
